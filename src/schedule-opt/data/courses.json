@@ -1,0 +1,24 @@
+{
+    "Fisica I": {
+      "weekly_hours": 8
+    },
+    "Fondamenti di Informatica": {
+      "weekly_hours": 8
+    },
+    "Fondamenti di Automatica": {
+      "weekly_hours": 4
+    },
+    "Calcolatori Elettronici": {
+      "weekly_hours": 4
+    },
+    "Programmazione Orientata agli Oggetti": {
+      "weekly_hours": 6
+    },
+    "Controllo Digitale": {
+      "weekly_hours": 6
+    },
+    "Reti e Sistemi per l'Automazione": {
+      "weekly_hours": 6
+    }
+}
+  
