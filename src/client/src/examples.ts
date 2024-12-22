@@ -22,18 +22,14 @@ export const example_data: ScheduleDto = {
         { classroom_name: "N18", course_name: "Fondamenti di Informatica", teacher_name: "Fabrizio Frati", start: 10, end: 12, day: "Mercoledi", color_hex: colors[1] },
         { classroom_name: "N18", course_name: "Fisica I", teacher_name: "Matteo Rosati", start: 8, end: 10, day: "Giovedi", color_hex: colors[0] },
         { classroom_name: "N18", course_name: "Fondamenti di Informatica", teacher_name: "Fabrizio Frati", start: 10, end: 12, day: "Giovedi", color_hex: colors[1] },
-        { classroom_name: "N18", course_name: "Fisica I", teacher_name: "Matteo Rosati", start: 8, end: 10, day: "Venerdi", color_hex: colors[0] },
-        { classroom_name: "N18", course_name: "Fondamenti di Informatica", teacher_name: "Fabrizio Frati", start: 10, end: 12, day: "Venerdi", color_hex: colors[1] },
         { classroom_name: "N18", course_name: "Fisica I", teacher_name: "Riccardo Borghi", start: 14, end: 16, day: "Lunedi", color_hex: colors[2] },
         { classroom_name: "N18", course_name: "Fondamenti di Informatica", teacher_name: "Carla Limongelli", start: 14, end: 16, day: "Martedi", color_hex: colors[3] },
         { classroom_name: "N18", course_name: "Fisica I", teacher_name: "Riccardo Borghi", start: 14, end: 16, day: "Mercoledi", color_hex: colors[2] },
         { classroom_name: "N18", course_name: "Fondamenti di Informatica", teacher_name: "Carla Limongelli", start: 14, end: 16, day: "Giovedi", color_hex: colors[3] },
-        { classroom_name: "N18", course_name: "Fisica I", teacher_name: "Riccardo Borghi", start: 14, end: 16, day: "Venerdi", color_hex: colors[2] },
         { classroom_name: "N18", course_name: "Fondamenti di Informatica", teacher_name: "Carla Limongelli", start: 16, end: 18, day: "Lunedi", color_hex: colors[4] },
         { classroom_name: "N18", course_name: "Fisica I", teacher_name: "Riccardo Borghi", start: 16, end: 18, day: "Martedi", color_hex: colors[2] },
         { classroom_name: "N18", course_name: "Fondamenti di Informatica", teacher_name: "Carla Limongelli", start: 16, end: 18, day: "Mercoledi", color_hex: colors[4] },
-        { classroom_name: "N18", course_name: "Fisica I", teacher_name: "Riccardo Borghi", start: 16, end: 18, day: "Giovedi", color_hex: colors[2] },
-        { classroom_name: "N18", course_name: "Fondamenti di Informatica", teacher_name: "Carla Limongelli", start: 16, end: 18, day: "Venerdi", color_hex: colors[4] }
+        { classroom_name: "N18", course_name: "Fisica I", teacher_name: "Riccardo Borghi", start: 16, end: 18, day: "Giovedi", color_hex: colors[2] }
       ],
       // Year 2
       [
