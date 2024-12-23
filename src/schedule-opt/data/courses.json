@@ -1,24 +1,41 @@
 {
-    "Fisica I": {
-      "weekly_hours": 8
-    },
-    "Fondamenti di Informatica": {
-      "weekly_hours": 8
-    },
-    "Fondamenti di Automatica": {
-      "weekly_hours": 4
-    },
-    "Calcolatori Elettronici": {
-      "weekly_hours": 4
-    },
-    "Programmazione Orientata agli Oggetti": {
-      "weekly_hours": 6
-    },
-    "Controllo Digitale": {
-      "weekly_hours": 6
-    },
-    "Reti e Sistemi per l'Automazione": {
-      "weekly_hours": 6
-    }
+  "Analisi Matematica I": {
+    "weekly_hours": 8
+  },
+  "Geometria e Combinatoria": {
+    "weekly_hours": 8
+  },
+  "Elettrotecnica ed Elettronica": {
+    "weekly_hours": 6
+  },
+  "Analisi dei Sistemi ad Eventi": {
+    "weekly_hours": 4
+  },
+  "Fondamenti di Telecomunicazioni": {
+    "weekly_hours": 4
+  },
+  "Algoritmi e Strutture di Dati": {
+    "weekly_hours": 6
+  },
+  "Basi di Dati I": {
+    "weekly_hours": 4
+  },
+  "Mobile Computing": {
+    "weekly_hours": 4
+  },
+  "Reti di Calcolatori": {
+    "weekly_hours": 4
+  },
+  "Programmazione Funzionale": {
+    "weekly_hours": 4
+  },
+  "Economia Applicata all'Ingegneria": {
+    "weekly_hours": 4
+  },
+  "Sistemi Operativi": {
+    "weekly_hours": 4
+  },
+  "Ricerca Operativa II": {
+    "weekly_hours": 4
+  }
 }
-  
