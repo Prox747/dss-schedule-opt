@@ -2,22 +2,6 @@ from pydantic import BaseModel
 from typing import Literal, Optional
 
 
-colors: list[str] = [
-    "#556B2F", # Dark Olive Green
-    "#8B4513", # Saddle Brown
-    "#4682B4", # Steel Blue
-    "#5F9EA0", # Cadet Blue
-    "#7B68EE", # Medium Slate Blue
-    "#708090", # Slate Gray
-    "#9ACD32", # Yellow-Green
-]
-
-
-class Classroom(BaseModel):
-    name: str
-    capacity: int
-    
-
 class TimeSlot(BaseModel):
     start: int
     end: int
@@ -38,10 +22,10 @@ class Course(BaseModel):
 
 
 class AssignedTimeSlot(BaseModel):
-    classroom: Classroom
-    teacher: Teacher
+    classroom: str
     course: Course
     time_slot: TimeSlot
+    color_hex: str
  
     
 class Schedule(BaseModel):
