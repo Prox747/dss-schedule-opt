@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Literal
+from typing import Literal, Optional
 
 
 colors: list[str] = [
@@ -21,8 +21,8 @@ class Classroom(BaseModel):
 class TimeSlot(BaseModel):
     start: int
     end: int
-    day: Literal["Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi"]
-
+    day: Optional[Literal["Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi"]]
+    
 
 class Teacher(BaseModel):
     name: str
@@ -34,6 +34,7 @@ class Course(BaseModel):
     name: str
     teacher: Teacher
     weekly_hours: int
+    year: int
 
 
 class AssignedTimeSlot(BaseModel):
