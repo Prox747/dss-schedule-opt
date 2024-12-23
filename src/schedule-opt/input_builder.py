@@ -69,9 +69,9 @@ def build_first_schedule(year1_courses: list[Course],
         year_schedule: list[AssignedTimeSlot] = []
         current_day = 0
         current_time = START_TIME
+        color_index = 0
     
         for course in courses_by_year[i]:
-            color_index = 0
             hours_remaining = course.weekly_hours
             
             while hours_remaining > 0:
@@ -98,11 +98,12 @@ def build_first_schedule(year1_courses: list[Course],
                 # Update counters
                 hours_remaining -= 2
                 current_time = slot_end
-                color_index += 1 % len(COLORS)
 
                 if current_time >= END_TIME:  # If we hit the end of the day, move to the next day
                     current_day = (current_day + 1) % len(DAYS)
                     current_time = START_TIME
+                    
+            color_index = (color_index + 1) % len(COLORS)
         
         schedule.year_schedules.append(year_schedule)
 
