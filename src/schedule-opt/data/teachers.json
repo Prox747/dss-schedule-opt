@@ -1,67 +1,50 @@
 {
   "Pierpaolo Natalini": {
     "undesired_time_slots": ["13-14", "15-16"],
-    "unavailable_time_slots": ["12-13", "14-15"],
-    "courses": ["Analisi Matematica I"]
+    "unavailable_time_slots": ["12-13", "14-15"]
   },
   "Marcella Sama": {
     "undesired_time_slots": ["15-16", "16-17"],
-    "unavailable_time_slots": ["12-13", "14-15"],
-    "courses": ["Geometria e Combinatoria"]
+    "unavailable_time_slots": ["12-13", "14-15"]
   },
   "Francesco Riganti Fulginei": {
     "undesired_time_slots": ["10-11", "11-12"],
-    "unavailable_time_slots": ["13-14", "14-15"],
-    "courses": ["Elettrotecnica ed Elettronica"]
-  },
-  "Ludovica Adacher": {
-    "undesired_time_slots": ["14-15", "15-16"],
-    "unavailable_time_slots": ["16-17", "17-18"],
-    "courses": ["Analisi dei Sistemi ad Eventi"]
-  },
-  "Gabriella Cincotti": {
-    "undesired_time_slots": ["15-16", "16-17"],
-    "unavailable_time_slots": ["14-15", "17-18"],
-    "courses": ["Fondamenti di Telecomunicazioni"]
+    "unavailable_time_slots": ["13-14", "14-15"]
   },
   "Maurizio Patrignani": {
     "undesired_time_slots": ["16-17", "17-18"],
-    "unavailable_time_slots": ["14-15", "15-16"],
-    "courses": ["Algoritmi e Strutture di Dati"]
+    "unavailable_time_slots": ["14-15", "15-16"]
   },
-  "Paolo Atzeni": {
+  "Paolo Merialdo": {
     "undesired_time_slots": ["14-15", "15-16"],
-    "unavailable_time_slots": ["16-17", "17-18"],
-    "courses": ["Basi di Dati I"]
+    "unavailable_time_slots": ["16-17", "17-18"]
+  },
+  "Fabrizio Frati": {
+    "undesired_time_slots": ["14-15", "15-16"],
+    "unavailable_time_slots": ["16-17", "17-18"]
   },
   "Franco Milicchio": {
     "undesired_time_slots": ["13-14", "15-16"],
-    "unavailable_time_slots": ["12-13", "14-15"],
-    "courses": ["Mobile Computing"]
+    "unavailable_time_slots": ["12-13", "14-15"]
   },
   "Giuseppe Di Battista": {
     "undesired_time_slots": ["12-13", "13-14"],
-    "unavailable_time_slots": ["14-15", "15-16"],
-    "courses": ["Reti di Calcolatori"]
+    "unavailable_time_slots": ["14-15", "15-16"]
   },
   "Marta Cialdea": {
     "undesired_time_slots": ["11-12", "13-14"],
-    "unavailable_time_slots": ["14-15", "15-16"],
-    "courses": ["Programmazione Funzionale"]
+    "unavailable_time_slots": ["14-15", "15-16"]
   },
   "Gaia Nicosia": {
     "undesired_time_slots": ["14-15", "15-16"],
-    "unavailable_time_slots": ["8-9", "9-10"],
-    "courses": ["Ricerca Operativa II"]
+    "unavailable_time_slots": ["8-9", "9-10"]
   },
   "Romolo Marotta": {
     "undesired_time_slots": ["14-15", "15-16"],
-    "unavailable_time_slots": ["8-9", "9-10"],
-    "courses": ["Sistemi Operativi"]
+    "unavailable_time_slots": ["8-9", "9-10"]
   },
   "Tecla De Luca": {
     "undesired_time_slots": ["10-11", "11-12"],
-    "unavailable_time_slots": ["13-14", "14-15"],
-    "courses": ["Economia Applicata all'Ingegneria"]
+    "unavailable_time_slots": ["13-14", "14-15"]
   }
 }

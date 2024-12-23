@@ -1,41 +1,82 @@
 {
   "Analisi Matematica I": {
-    "weekly_hours": 8
+    "weekly_hours": 8,
+    "year": 1,
+    "teacher": "Pierpaolo Natalini"
+  },
+  "Fondamenti di Informatica": {
+    "weekly_hours": 8,
+    "year": 1,
+    "teacher": "Fabrizio Frati"
   },
   "Geometria e Combinatoria": {
-    "weekly_hours": 8
+    "weekly_hours": 8,
+    "year": 1,
+    "teacher": "Marcella Sama"
   },
   "Elettrotecnica ed Elettronica": {
-    "weekly_hours": 6
-  },
-  "Analisi dei Sistemi ad Eventi": {
-    "weekly_hours": 4
-  },
-  "Fondamenti di Telecomunicazioni": {
-    "weekly_hours": 4
+    "weekly_hours": 6,
+    "year": 2,
+    "teacher": "Francesco Riganti Fulginei"
   },
   "Algoritmi e Strutture di Dati": {
-    "weekly_hours": 6
+    "weekly_hours": 6,
+    "year": 2,
+    "teacher": "Maurizio Patrignani"
   },
   "Basi di Dati I": {
-    "weekly_hours": 4
+    "weekly_hours": 4,
+    "year": 3,
+    "teacher": "Paolo Merialdo"
   },
   "Mobile Computing": {
-    "weekly_hours": 4
+    "weekly_hours": 4,
+    "year": 3,
+    "teacher": "Franco Milicchio"
   },
   "Reti di Calcolatori": {
-    "weekly_hours": 4
+    "weekly_hours": 4,
+    "year": 3,
+    "teacher": "Giuseppe Di Battista"
   },
   "Programmazione Funzionale": {
-    "weekly_hours": 4
+    "weekly_hours": 4,
+    "year": 3,
+    "teacher": "Marta Cialdea"
   },
   "Economia Applicata all'Ingegneria": {
-    "weekly_hours": 4
+    "weekly_hours": 4,
+    "year": 3,
+    "teacher": "Tecla De Luca"
   },
   "Sistemi Operativi": {
-    "weekly_hours": 4
+    "weekly_hours": 4,
+    "year": 3,
+    "teacher": "Romolo Marotta"
   },
   "Ricerca Operativa II": {
-    "weekly_hours": 4
+    "weekly_hours": 4,
+    "year": 3,
+    "teacher": "Gaia Nicosia"
+  },
+  "Ricerca Operativa I": {
+    "weekly_hours": 6,
+    "year": 2,
+    "teacher": "Marcella Sama"
+  },
+  "Computer Graphics": {
+    "weekly_hours": 4,
+    "year": 2,
+    "teacher": "Franco Milicchio"
+  },
+  "Automata Languages and Computing": {
+    "weekly_hours": 6,
+    "year": 2,
+    "teacher": "Giuseppe Di Battista"
+  },
+  "Sistemi Informativi su Web": {
+    "weekly_hours": 4,
+    "year": 3,
+    "teacher": "Paolo Merialdo"
   }
 }
