@@ -1,6 +1,6 @@
 import axios from "axios";
 import { ScheduleDto, TimeSlotDto } from "./model_dto";
-import { example_data } from "./examples";
+import { example_output } from "./examples";
 
 console.log(
     '🚀 Developed by Prox'
@@ -100,7 +100,7 @@ function get_schedule() {
 function example() {
     // Initialize and populate the schedule
     initializeSchedule();
-    populateSchedule(example_data);
+    populateSchedule(example_output);
 }
 
 example()

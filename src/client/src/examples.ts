@@ -10,7 +10,7 @@ const colors = [
     "#9ACD32", // Yellow-Green
 ];
 
-export const example_data: ScheduleDto = {
+export const example_output: ScheduleDto = {
     year_schedules: [
       // Year 1
       [
