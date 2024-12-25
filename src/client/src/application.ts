@@ -6,6 +6,9 @@ console.log(
     '🚀 Developed by Prox'
 );
 
+// Simple delay function
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 initializeSchedule();
 
 let getScheduleBtn = document.getElementById("get-schedule-btn") as HTMLButtonElement;
@@ -13,15 +16,14 @@ let spinner = document.getElementById("spinner") as HTMLElement;
 
 console.log(spinner, getScheduleBtn);
 
-getScheduleBtn.addEventListener("click", () => {
+getScheduleBtn.addEventListener("click", async () => {
         spinner.classList.remove("d-none");
-        spinner.classList.remove("d-inline");
         getScheduleBtn.disabled = true;
 
+        await delay(200);
         get_schedule();
-
-        spinner.classList.remove("d-inline");
-        spinner.classList.remove("d-none");
+        
+        spinner.classList.add("d-none");
         getScheduleBtn.disabled = false;
 });
 
@@ -93,19 +95,12 @@ function populateSchedule(data: ScheduleDto) {
 }
 
 function get_schedule() {
-    document.getElementById('search-result').style.display = 'block';
-
     axios.get(`http://localhost:13000/api/schedule`).then((response) => {
         console.log(response.data);
         populateSchedule(response.data);
 
     }).catch((error) => {
         console.error('Error fetching schedule:', error);
-
-        /* const scheduleContainer = document.getElementById('schedule-container');
-        if (scheduleContainer) {
-            scheduleContainer.innerHTML = '<p>Error fetching schedule.</p>';
-        } */
     });
 }
 
