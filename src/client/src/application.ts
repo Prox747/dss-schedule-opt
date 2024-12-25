@@ -6,13 +6,24 @@ console.log(
     '🚀 Developed by Prox'
 );
 
-/* let searchInput = document.getElementById("search") as HTMLInputElement;
+initializeSchedule();
 
-searchInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
+let getScheduleBtn = document.getElementById("get-schedule-btn") as HTMLButtonElement;
+let spinner = document.getElementById("spinner") as HTMLElement;
+
+console.log(spinner, getScheduleBtn);
+
+getScheduleBtn.addEventListener("click", () => {
+        spinner.classList.remove("d-none");
+        spinner.classList.remove("d-inline");
+        getScheduleBtn.disabled = true;
+
         get_schedule();
-    }
-}); */
+
+        spinner.classList.remove("d-inline");
+        spinner.classList.remove("d-none");
+        getScheduleBtn.disabled = false;
+});
 
 const colors = [
     "#556B2F", // Dark Olive Green
@@ -86,6 +97,7 @@ function get_schedule() {
 
     axios.get(`http://localhost:13000/api/schedule`).then((response) => {
         console.log(response.data);
+        populateSchedule(response.data);
 
     }).catch((error) => {
         console.error('Error fetching schedule:', error);
@@ -102,5 +114,3 @@ function example() {
     initializeSchedule();
     populateSchedule(example_output);
 }
-
-example()
