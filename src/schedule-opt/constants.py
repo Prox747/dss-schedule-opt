@@ -1,7 +1,7 @@
 DAYS = ["Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi"]
 START_TIME = 8  # Start of the day
 END_TIME = 18  # End of the day
-CLASSROOMS: list[str] = ["N11", "N10", "N12"]
+CLASSROOMS: list[str] = ["N18", "N11", "N13"]
 
 COLORS: list[str] = [
     "#556B2F", # Dark Olive Green
