@@ -1,18 +1,18 @@
 {
+  "Geometria e Combinatoria": {
+    "weekly_hours": 8,
+    "year": 1,
+    "teacher": "Marcella Sama"
+  },
   "Analisi Matematica I": {
     "weekly_hours": 8,
     "year": 1,
     "teacher": "Pierpaolo Natalini"
   },
   "Fondamenti di Informatica": {
-    "weekly_hours": 4,
-    "year": 1,
-    "teacher": "Fabrizio Frati"
-  },
-  "Geometria e Combinatoria": {
     "weekly_hours": 8,
     "year": 1,
-    "teacher": "Marcella Sama"
+    "teacher": "Fabrizio Frati"
   },
   "Elettrotecnica ed Elettronica": {
     "weekly_hours": 6,
