@@ -39,7 +39,7 @@ const colors = [
 
 // Function to initialize the schedule grids
 function initializeSchedule() {
-    // we loop for each od the three years and init the grids
+    // we loop for each of the three years and init the grids
     for (let i = 1; i <= 3; i++) {
         const scheduleBody = document.getElementById(`${i}-schedule-body`) as HTMLElement;
         const hours = Array.from({ length: 10 }, (_, i) => 8 + i); // [8, 9, ..., 17]
@@ -50,6 +50,11 @@ function initializeSchedule() {
             // Time column
             const timeCell = document.createElement("td");
             timeCell.textContent = `${hour}:00 - ${hour + 1}:00`;
+            // we add a bottom left border if we are on 17-18 time slot
+            if (hour == 17) {
+                timeCell.classList.add("last-left-cell");
+            }
+
             row.appendChild(timeCell);
 
             // Empty cells for each day
@@ -57,7 +62,13 @@ function initializeSchedule() {
                 const cell = document.createElement("td");
                 // each cell has an id in this format: "year-day-start_hour"
                 cell.id = `${i}-${dayId}-${hour}`;
+
+                //to add bottom right rounded border
+                if (cell.id.includes("venerdi-17")) {
+                    cell.classList.add("last-right-cell");
+                }
                 cell.classList.add("p-0");
+                
                 row.appendChild(cell);
             });
 

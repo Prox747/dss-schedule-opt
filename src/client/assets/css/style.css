@@ -6,14 +6,7 @@ body {
     margin: 0; /* Remove default body margin */
 }
 
-.schedule-table {
-    border-collapse: collapse; /* Ensures borders do not double */
-    border: 2px solid #000; /* Set the outer border of the table */
-}
-
-.schedule-table td, 
-.schedule-table th {
-    border: 2px solid #000; /* Set the thickness of cell borders */
+td, th {
     height: 60px;
     text-align: center;
     vertical-align: middle;
@@ -22,4 +15,13 @@ body {
 .class-cell {
     color: white;
     font-size: 13px;
+    height: 100%;
+}
+
+.last-left-cell {
+    border-bottom-left-radius: 15px;
+}
+
+.last-right-cell {
+    border-bottom-right-radius: 15px;
 }
