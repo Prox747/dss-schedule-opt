@@ -1,4 +1,4 @@
-import json
+import json, random
 from model import Teacher, Course, TimeSlot, AssignedTimeSlot, Schedule
 from constants import DAYS, START_TIME, END_TIME, CLASSROOMS, COLORS
 
@@ -15,13 +15,15 @@ def extract_teachers(json_file_path) -> list[Teacher]:
         undesired_slots, unavailable_slots = [
             TimeSlot(
                 start=slot.split("-")[0],
-                end=slot.split("-")[1]
+                end=slot.split("-")[1],
+                day=slot.split("-")[2] if slot.split("-")[2] else None
             )
             for slot in undesired_slots
         ],[
             TimeSlot(
                 start=slot.split("-")[0],
-                end=slot.split("-")[1]
+                end=slot.split("-")[1],
+                day=slot.split("-")[2] if slot.split("-")[2] else None
             )
             for slot in unavailable_slots
         ]
@@ -54,8 +56,7 @@ def extract_courses(json_file_path: str, teachers: list[Teacher]) -> list[Course
     
     return courses
 
-
-# Function to create the years_schedule
+# hell function to build first schedule without using unavailable slots
 def build_first_schedule(year1_courses: list[Course],
                          year2_courses: list[Course],
                          year3_courses: list[Course],) -> Schedule:
@@ -63,48 +64,91 @@ def build_first_schedule(year1_courses: list[Course],
     schedule = Schedule(
         year_schedules=[]
     )
-    
-    # for each year
-    for i in range(0, 3):
-        year_schedule: list[AssignedTimeSlot] = []
-        current_day = 0
-        current_time = START_TIME
-        color_index = 0
-    
-        for course in courses_by_year[i]:
-            hours_remaining = course.weekly_hours
-            
-            while hours_remaining > 0:
-                slot_end = current_time + 2  # Each slot is 2 hours
-                
-                if slot_end > END_TIME:  # If we exceed the day's end, move to the next day
-                    current_day = (current_day + 1) % len(DAYS)
-                    current_time = START_TIME
-                    continue
 
-                # Assign the time slot
-                time_slot = TimeSlot(
-                    start=current_time,
-                    end=slot_end,
-                    day=DAYS[current_day]
-                )
-                year_schedule.append(AssignedTimeSlot(
-                    classroom=CLASSROOMS[i],
-                    course=course,
-                    time_slot=time_slot,
-                    color_hex=COLORS[color_index]
-                ))
+    for attempt in range(3):  # Retry logic for randomized course orders
+        try:
+            # For each year
+            for i in range(0, 3):
+                year_schedule: list[AssignedTimeSlot] = []
+                color_index: int = -1 # it will be zero the first time
 
-                # Update counters
-                hours_remaining -= 2
-                current_time = slot_end
+                for course in courses_by_year[i]:
+                    hours_remaining = course.weekly_hours
+                    color_index = (color_index + 1) % len(COLORS)
 
-                if current_time >= END_TIME:  # If we hit the end of the day, move to the next day
-                    current_day = (current_day + 1) % len(DAYS)
-                    current_time = START_TIME
-                    
-            color_index = (color_index + 1) % len(COLORS)
-        
-        schedule.year_schedules.append(year_schedule)
+                    while hours_remaining > 0:
+                        valid_slot_found = False
 
-    return schedule
+                        for day in DAYS:
+                            for current_time in range(START_TIME, END_TIME, 2):
+                                slot_end = current_time + 2
+                                
+                                if slot_end > END_TIME:
+                                    continue
+
+                                time_slot = TimeSlot(
+                                    start=current_time,
+                                    end=slot_end,
+                                    day=day
+                                )
+
+                                # Check if the slot is valid
+                                if not is_slot_valid(time_slot, course, year_schedule, schedule):
+                                    continue
+
+                                # Assign the time slot
+                                year_schedule.append(AssignedTimeSlot(
+                                    classroom=CLASSROOMS[i],
+                                    course=course,
+                                    time_slot=time_slot,
+                                    color_hex=COLORS[color_index]
+                                ))
+
+                                # we scan for all slots possible contigously and if we find one
+                                # we just descrease the hours to schedule for that course and
+                                # break the days and time slots cycles to return to the outer while loop.
+                                # There we check if we need to assign more hours or not and if we
+                                # successfullt assigned a slot or not
+                                hours_remaining -= 2
+                                valid_slot_found = True
+                                break
+                            
+                        if valid_slot_found:
+                            break
+
+                        if not valid_slot_found:
+                            raise ValueError("Unable to find valid slot for course")
+
+                schedule.year_schedules.append(year_schedule)
+
+            return schedule
+        except ValueError:
+            # Shuffle the courses and retry
+            for year_courses in courses_by_year:
+                random.shuffle(year_courses)
+
+    raise RuntimeError("Unable to build a valid schedule after 3 attempts")
+
+def is_slot_valid(time_slot: TimeSlot, course: Course, year_schedule: list[AssignedTimeSlot], schedule: Schedule) -> bool:
+    # Check if the teacher is unavailable
+    for unavailable in course.teacher.unavailable_slots:
+        if ((unavailable.day == None or time_slot.day == unavailable.day) and
+                time_slot.start < unavailable.end and
+                time_slot.end > unavailable.start):
+            return False
+
+    # Check if the slot is already occupied in the current year
+    for assigned_slot in year_schedule:
+        if (assigned_slot.time_slot.day == time_slot.day and
+                assigned_slot.time_slot.start == time_slot.start):
+            return False
+
+    # Check for teacher conflicts across years
+    for other_year_schedule in schedule.year_schedules:
+        for assigned_slot in other_year_schedule:
+            if (assigned_slot.course.teacher == course.teacher and
+                    assigned_slot.time_slot.day == time_slot.day and
+                    assigned_slot.time_slot.start == time_slot.start):
+                return False
+
+    return True
