@@ -1,50 +1,50 @@
 {
   "Pierpaolo Natalini": {
-    "undesired_time_slots": ["13-14", "15-16"],
-    "unavailable_time_slots": ["12-13", "14-15"]
+    "undesired_time_slots": ["10-11-lunedi", "15-16-mercoledi"],
+    "unavailable_time_slots": ["12-13-lunedi", "14-15-mercoledi"]
   },
   "Marcella Sama": {
-    "undesired_time_slots": ["15-16", "16-17"],
-    "unavailable_time_slots": ["12-13", "14-15"]
+    "undesired_time_slots": ["15-16-lunedi", "11-12-giovedi"],
+    "unavailable_time_slots": ["8-18-lunedi", "13-14-giovedi"]
   },
   "Francesco Riganti Fulginei": {
-    "undesired_time_slots": ["10-11", "11-12"],
-    "unavailable_time_slots": ["13-14", "14-15"]
+    "undesired_time_slots": ["10-11-martedi", "14-15-mercoledi"],
+    "unavailable_time_slots": ["13-14-martedi", "15-16-mercoledi"]
   },
   "Maurizio Patrignani": {
-    "undesired_time_slots": ["16-17", "17-18"],
-    "unavailable_time_slots": ["14-15", "15-16"]
+    "undesired_time_slots": ["16-17-mercoledi", "9-10-venerdi"],
+    "unavailable_time_slots": ["14-15-mercoledi", "10-11-venerdi"]
   },
   "Paolo Merialdo": {
-    "undesired_time_slots": ["14-15", "15-16"],
-    "unavailable_time_slots": ["16-17", "17-18"]
+    "undesired_time_slots": ["9-10-martedi", "13-14-giovedi"],
+    "unavailable_time_slots": ["11-12-martedi", "14-15-giovedi"]
   },
   "Fabrizio Frati": {
-    "undesired_time_slots": ["14-15", "15-16"],
-    "unavailable_time_slots": ["16-17", "17-18"]
+    "undesired_time_slots": ["10-11-mercoledi", "15-16-venerdi"],
+    "unavailable_time_slots": ["14-15-mercoledi", "16-17-venerdi"]
   },
   "Franco Milicchio": {
-    "undesired_time_slots": ["13-14", "15-16"],
-    "unavailable_time_slots": ["12-13", "14-15"]
+    "undesired_time_slots": ["9-10-lunedi", "14-15-giovedi"],
+    "unavailable_time_slots": ["10-11-lunedi", "15-16-giovedi"]
   },
   "Giuseppe Di Battista": {
-    "undesired_time_slots": ["12-13", "13-14"],
-    "unavailable_time_slots": ["14-15", "15-16"]
+    "undesired_time_slots": ["11-12-lunedi", "13-14-venerdi"],
+    "unavailable_time_slots": ["12-13-lunedi", "14-15-venerdi"]
   },
   "Marta Cialdea": {
-    "undesired_time_slots": ["11-12", "13-14"],
-    "unavailable_time_slots": ["14-15", "15-16"]
+    "undesired_time_slots": ["10-11-martedi", "14-15-giovedi"],
+    "unavailable_time_slots": ["11-12-martedi", "15-16-giovedi"]
   },
   "Gaia Nicosia": {
-    "undesired_time_slots": ["14-15", "15-16"],
-    "unavailable_time_slots": ["8-9", "9-10"]
+    "undesired_time_slots": ["9-10-lunedi", "13-14-mercoledi"],
+    "unavailable_time_slots": ["8-9-lunedi", "14-15-mercoledi"]
   },
   "Romolo Marotta": {
-    "undesired_time_slots": ["14-15", "15-16"],
-    "unavailable_time_slots": ["8-9", "9-10"]
+    "undesired_time_slots": ["14-15-lunedi", "15-16-mercoledi"],
+    "unavailable_time_slots": ["8-9-lunedi", "16-17-mercoledi"]
   },
   "Tecla De Luca": {
-    "undesired_time_slots": ["10-11", "11-12"],
-    "unavailable_time_slots": ["13-14", "14-15"]
+    "undesired_time_slots": ["11-12-martedi", "15-16-giovedi"],
+    "unavailable_time_slots": ["13-14-martedi", "16-17-giovedi"]
   }
 }
