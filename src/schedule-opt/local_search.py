@@ -34,7 +34,7 @@ def find_schedule() -> Schedule:
     
     return best_schedule
 
-def evaluate_schedule(schedule: Schedule, teachers: list[Teacher]) -> float:
+def evaluate_schedule(schedule: Schedule, teachers: list[Teacher], log: bool) -> float:
     empty_time_slot_penalty = 0
     teacher_violation_penalty = 0
 
@@ -64,10 +64,10 @@ def evaluate_schedule(schedule: Schedule, teachers: list[Teacher]) -> float:
                 if ((undesired.day == None or slot.time_slot.day == undesired.day) and
                         slot.time_slot.start < undesired.end and
                         slot.time_slot.end > undesired.start):
-                    print(f"""\033[91mViolation of preference: Teacher {slot.course.teacher.name}\nhas a slot 
-                          [{slot.time_slot.start}-{slot.time_slot.end}-{slot.time_slot.day if slot.time_slot.day else "all"}]
-                          but dont want to work on\n 
-                          [{undesired.start}-{undesired.end}-{undesired.day if undesired.day else "all"}].\n\n\033[0m""")
+                    if log:
+                        print(f"\033[91mViolation of preference: Teacher {slot.course.teacher.name}\n" +
+                               f"has a slot [{slot.time_slot.start}-{slot.time_slot.end}-{slot.time_slot.day if slot.time_slot.day else 'all'}]" +
+                               f"but dont want to work on\n [{undesired.start}-{undesired.end}-{undesired.day if undesired.day else 'all'}].\n\n\033[0m")
                     teacher_violation_penalty += 1  # Violation of preference
 
     return ALPHA * empty_time_slot_penalty + BETA * teacher_violation_penalty
@@ -78,7 +78,7 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
     
     courses_by_year = [year1_courses, year2_courses, year3_courses]
     current_schedule = initial_schedule
-    best_fitness = evaluate_schedule(current_schedule, teachers)
+    best_fitness = evaluate_schedule(current_schedule, teachers, log=False)
 
     for num_moves in range(1, MAX_MOVES + 1):
         print(f"\033[91mTrying to improve using {num_moves}.\n\n\033[0m")
@@ -98,8 +98,8 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
                 else:
                     neighbor = move_to_empty_slot(neighbor, year_index, slot)
 
-            if is_schedule_valid(neighbor):
-                fitness = evaluate_schedule(neighbor, teachers)
+            if is_schedule_valid(neighbor, False):
+                fitness = evaluate_schedule(neighbor, teachers, False)
 
                 if fitness < best_fitness:
                     print(f"\033[92mFitness improved from {best_fitness} to {fitness}.\n\n\033[0m")
@@ -164,7 +164,7 @@ def move_to_empty_slot(schedule: Schedule, year_index: int, slot: AssignedTimeSl
     return neighbor
 
 # Checks for unavailable teachers slots or overlapping teachers lessons between years
-def is_schedule_valid(schedule: Schedule) -> bool:
+def is_schedule_valid(schedule: Schedule, log: bool) -> bool:
     for year_schedule in schedule.year_schedules:
         for slot in year_schedule:
             for other_year_schedule in schedule.year_schedules:
@@ -181,6 +181,10 @@ def is_schedule_valid(schedule: Schedule) -> bool:
                 if (slot.time_slot.day == unavailable.day and
                         slot.time_slot.start < unavailable.end and
                         slot.time_slot.end > unavailable.start):
+                    if log:
+                        print(f"\033[91mViolation of preference: Teacher {slot.course.teacher.name}\n" +
+                               f"has a slot [{slot.time_slot.start}-{slot.time_slot.end}-{slot.time_slot.day if slot.time_slot.day else 'all'}]" +
+                               f"but dont want to work on\n [{unavailable.start}-{unavailable.end}-{unavailable.day if unavailable.day else 'all'}].\n\n\033[0m")
                     return False
 
     return True
