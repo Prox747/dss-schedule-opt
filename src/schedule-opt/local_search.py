@@ -1,7 +1,9 @@
 import random
+from copy import deepcopy
+
 from input_builder import extract_teachers, extract_courses, build_first_schedule
 from model import Teacher, Course, Schedule, AssignedTimeSlot
-from constants import MAX_ITER, ALPHA, BETA, MAX_MOVES
+from constants import MAX_ITER, ALPHA, BETA, MAX_MOVES, DAYS
 
 def find_schedule() -> Schedule:
     teachers: list[Teacher] = extract_teachers('./data/teachers.json')
@@ -37,7 +39,7 @@ def evaluate_schedule(schedule: Schedule, teachers: list[Teacher]) -> float:
     teacher_violation_penalty = 0
 
     for year_schedule in schedule.year_schedules:
-        for day in ["Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi"]:
+        for day in DAYS:
             daily_slots = [slot for slot in year_schedule if slot.time_slot.day == day]
             if not daily_slots:
                 continue
@@ -62,15 +64,26 @@ def evaluate_schedule(schedule: Schedule, teachers: list[Teacher]) -> float:
                 if ((undesired.day == None or slot.time_slot.day == undesired.day) and
                         slot.time_slot.start < undesired.end and
                         slot.time_slot.end > undesired.start):
+                    print(f"""\033[91mViolation of preference: Teacher {slot.course.teacher.name}\nhas a slot 
+                          [{slot.time_slot.start}-{slot.time_slot.end}-{slot.time_slot.day if slot.time_slot.day else "all"}]
+                          but dont want to work on\n 
+                          [{undesired.start}-{undesired.end}-{undesired.day if undesired.day else "all"}].\n\n\033[0m""")
                     teacher_violation_penalty += 1  # Violation of preference
 
     return ALPHA * empty_time_slot_penalty + BETA * teacher_violation_penalty
 
-def local_search(initial_schedule: Schedule, teachers: list[Teacher], courses_by_year: list[list[Course]]) -> Schedule:
+def local_search(initial_schedule: Schedule, teachers: list[Teacher],
+                 year1_courses: list[Course], year2_courses: list[Course],
+                 year3_courses: list[Course]) -> Schedule:
+    
+    courses_by_year = [year1_courses, year2_courses, year3_courses]
     current_schedule = initial_schedule
     best_fitness = evaluate_schedule(current_schedule, teachers)
 
     for num_moves in range(1, MAX_MOVES + 1):
+        print(f"\033[91mTrying to improve using {num_moves}.\n\n\033[0m")
+        improved: bool = False
+        
         for iteration in range(MAX_ITER):
             neighbor = current_schedule.copy()
 
@@ -89,50 +102,63 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher], courses_by
                 fitness = evaluate_schedule(neighbor, teachers)
 
                 if fitness < best_fitness:
+                    print(f"\033[92mFitness improved from {best_fitness} to {fitness}.\n\n\033[0m")
                     current_schedule = neighbor
                     best_fitness = fitness
+                    improved = True
+        
+        # we try adding more moves if the solution is not improving
+        # TODO: this can become a treshold in the future
+        if improved:
+            break
 
     return current_schedule
 
 def swap_time_slots(schedule: Schedule, year_index: int, slot: AssignedTimeSlot) -> Schedule:
-    neighbor = schedule.copy()
-    other_slot = random.choice(neighbor.year_schedules[year_index])
+    neighbor = deepcopy(schedule)
+    year_schedule = neighbor.year_schedules[year_index]
 
-    neighbor.year_schedules[year_index].remove(slot)
-    neighbor.year_schedules[year_index].remove(other_slot)
+    year_schedule.remove(slot)
+    
+    other_slot: AssignedTimeSlot = random.choice(year_schedule)
+    year_schedule.remove(other_slot)
 
-    neighbor.year_schedules[year_index].append(AssignedTimeSlot(
+    year_schedule.append(AssignedTimeSlot(
         classroom=other_slot.classroom,
         teacher=slot.course.teacher,
         course=slot.course,
-        time_slot=other_slot.time_slot
+        time_slot=other_slot.time_slot,
+        color_hex=slot.color_hex
     ))
 
-    neighbor.year_schedules[year_index].append(AssignedTimeSlot(
+    year_schedule.append(AssignedTimeSlot(
         classroom=slot.classroom,
         teacher=other_slot.course.teacher,
         course=other_slot.course,
-        time_slot=slot.time_slot
+        time_slot=slot.time_slot,
+        color_hex=other_slot.color_hex
     ))
 
     return neighbor
 
 def move_to_empty_slot(schedule: Schedule, year_index: int, slot: AssignedTimeSlot) -> Schedule:
     neighbor = schedule.copy()
+    year_schedule = neighbor.year_schedules[year_index]
     empty_slots = [ts for ts in schedule.year_schedules[year_index]
                    if not any(slot.time_slot.start == ts.time_slot.start and
-                              slot.time_slot.day == ts.time_slot.day for slot in neighbor.year_schedules[year_index])]
+                              slot.time_slot.day == ts.time_slot.day for slot in year_schedule)]
 
     if not empty_slots:
         return schedule
 
     new_slot = random.choice(empty_slots)
-    neighbor.year_schedules[year_index].remove(slot)
-    neighbor.year_schedules[year_index].append(AssignedTimeSlot(
+    year_schedule.remove(slot)
+    year_schedule.append(AssignedTimeSlot(
         classroom=new_slot.classroom,
         teacher=slot.course.teacher,
         course=slot.course,
-        time_slot=new_slot.time_slot
+        time_slot=new_slot.time_slot,
+        color_hex=slot.color_hex
     ))
 
     return neighbor
