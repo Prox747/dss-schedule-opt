@@ -5,7 +5,7 @@ from typing import Literal, Optional
 class TimeSlot(BaseModel):
     start: int
     end: int
-    day: Optional[Literal["Lunedi", "Martedi", "Mercoledi", "Giovedi", "Venerdi"]] = None
+    day: Optional[Literal["lunedi", "martedi", "mercoledi", "giovedi", "venerdi"]] = None
     
 
 class Teacher(BaseModel):
