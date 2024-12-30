@@ -61,11 +61,12 @@ def build_first_schedule(year1_courses: list[Course],
                          year2_courses: list[Course],
                          year3_courses: list[Course],) -> Schedule:
     courses_by_year = [year1_courses, year2_courses, year3_courses]
-    schedule = Schedule(
-        year_schedules=[]
-    )
 
-    for attempt in range(3):  # Retry logic for randomized course orders
+    for attempt in range(3): # Retry logic for randomized course orders
+        schedule = Schedule(
+            year_schedules=[]
+        )
+        
         try:
             # For each year
             for i in range(0, 3):
@@ -113,10 +114,12 @@ def build_first_schedule(year1_courses: list[Course],
                                 valid_slot_found = True
                                 break
                             
-                        if valid_slot_found:
-                            break
+                            if valid_slot_found:
+                                break
 
                         if not valid_slot_found:
+                            print(f"\033[91mCannot find a slot for {course}, hours remaining: {hours_remaining}.\n\n\033[0m")
+                            print(year_schedule)
                             raise ValueError("Unable to find valid slot for course")
 
                 schedule.year_schedules.append(year_schedule)
@@ -127,20 +130,20 @@ def build_first_schedule(year1_courses: list[Course],
             for year_courses in courses_by_year:
                 random.shuffle(year_courses)
 
-    raise RuntimeError("Unable to build a valid schedule after 3 attempts")
+    raise RuntimeError(f"Unable to build a valid schedule after {attempt + 1} attempts")
 
 def is_slot_valid(time_slot: TimeSlot, course: Course, year_schedule: list[AssignedTimeSlot], schedule: Schedule) -> bool:
+    # Check if the slot is already occupied in the current year
+    for assigned_slot in year_schedule:
+        if (assigned_slot.time_slot.day == time_slot.day and
+                assigned_slot.time_slot.start == time_slot.start):
+            return False
+        
     # Check if the teacher is unavailable
     for unavailable in course.teacher.unavailable_slots:
         if ((unavailable.day == None or time_slot.day == unavailable.day) and
                 time_slot.start < unavailable.end and
                 time_slot.end > unavailable.start):
-            return False
-
-    # Check if the slot is already occupied in the current year
-    for assigned_slot in year_schedule:
-        if (assigned_slot.time_slot.day == time_slot.day and
-                assigned_slot.time_slot.start == time_slot.start):
             return False
 
     # Check for teacher conflicts across years
