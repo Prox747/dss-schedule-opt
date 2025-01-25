@@ -20,8 +20,7 @@ getScheduleBtn.addEventListener("click", async () => {
         spinner.classList.remove("d-none");
         getScheduleBtn.disabled = true;
 
-        await delay(200);
-        get_schedule();
+        await get_schedule();
         
         spinner.classList.add("d-none");
         getScheduleBtn.disabled = false;
@@ -103,9 +102,13 @@ function populateSchedule(data: ScheduleDto) {
             }
         })
     });
+
+    // write query time taken
+    const query_time_ms = document.getElementById('query-time') as HTMLElement;
+    query_time_ms.textContent = `Tempo di calcolo: ${data.query_time_ms} ms`;
 }
 
-function get_schedule() {
+async function get_schedule() {
     axios.get(`http://localhost:13000/api/schedule`).then((response) => {
         console.log(response.data);
         populateSchedule(response.data);
