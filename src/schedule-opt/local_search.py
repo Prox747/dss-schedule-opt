@@ -106,6 +106,9 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
                     current_schedule = neighbor
                     best_fitness = fitness
                     improved = True
+            
+            if best_fitness == 0:
+                break
         
         # we try adding more moves if the solution is not improving
         # TODO: this can become a treshold in the future
