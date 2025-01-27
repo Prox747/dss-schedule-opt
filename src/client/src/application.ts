@@ -21,7 +21,7 @@ getScheduleBtn.addEventListener("click", async () => {
         getScheduleBtn.disabled = true;
 
         await get_schedule();
-        
+    
         spinner.classList.add("d-none");
         getScheduleBtn.disabled = false;
 });
@@ -109,7 +109,7 @@ function populateSchedule(data: ScheduleDto) {
 }
 
 async function get_schedule() {
-    axios.get(`http://localhost:13000/api/schedule`).then((response) => {
+    await axios.get(`http://localhost:13000/api/schedule`).then((response) => {
         console.log(response.data);
         populateSchedule(response.data);
 
