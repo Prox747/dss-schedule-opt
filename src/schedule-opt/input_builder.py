@@ -1,6 +1,6 @@
 import json, random
 from model import Teacher, Course, TimeSlot, AssignedTimeSlot, Schedule
-from constants import DAYS, START_TIME, END_TIME, CLASSROOMS, COLORS
+from constants import DAYS, START_TIME, END_TIME, CLASSROOMS, COLORS, MAX_DAILY_HOURS
 from ansi_colors import *
 
 # Load JSON data and convert to Teacher objects
@@ -75,7 +75,7 @@ def build_first_schedule(year1_courses: list[Course],
             for year_courses in courses_by_year:
                 year_courses.sort(key=lambda course: course.teacher.get_total_unavailable_hours(), reverse=True)
         
-            print(f"{RED}FIRST SOLUTION BUILT WITH HEURISTIC{RESET}")
+            print(f"{RED}ORDERED COURSES BASED ON HEURISTIC{RESET}")
             print(courses_by_year)
         
         try:
@@ -84,10 +84,16 @@ def build_first_schedule(year1_courses: list[Course],
                 year_schedule: list[AssignedTimeSlot] = []
                 color_index: int = -1 # it will be zero the first time
 
+                # we need to keep track of how many hours a day we have left for each year schedule
+                # For the third year we allow two more hours per day since not all courses are mandatory
+                hours_left_per_day: dict[str, int] = {}
+                for day in DAYS:
+                    hours_left_per_day[day] = MAX_DAILY_HOURS if i != 2 else MAX_DAILY_HOURS + 2
+
                 for course in courses_by_year[i]:
                     hours_remaining = course.weekly_hours
                     color_index = (color_index + 1) % len(COLORS)
-
+            
                     while hours_remaining > 0:
                         valid_slot_found = False
 
@@ -95,7 +101,7 @@ def build_first_schedule(year1_courses: list[Course],
                             for current_time in range(START_TIME, END_TIME, 2):
                                 slot_end = current_time + 2
                                 
-                                if slot_end > END_TIME:
+                                if slot_end > END_TIME or (hours_left_per_day[day] == 0):
                                     continue
 
                                 time_slot = TimeSlot(
@@ -120,8 +126,10 @@ def build_first_schedule(year1_courses: list[Course],
                                 # we just descrease the hours to schedule for that course and
                                 # break the days and time slots cycles to return to the outer while loop.
                                 # There we check if we need to assign more hours or not and if we
-                                # successfullt assigned a slot or not
+                                # successfullt assigned a slot or not.
+                                # We also need to descrease the hours still available for that day
                                 hours_remaining -= 2
+                                hours_left_per_day[day] -= 2
                                 valid_slot_found = True
                                 break
                             
@@ -138,7 +146,7 @@ def build_first_schedule(year1_courses: list[Course],
             return schedule
         except ValueError:
             if use_heuristic:
-                raise RuntimeError(f"Unable to build a valid schedule using heuristic, too many constraints")
+                raise RuntimeError(f"{RED}Unable to build a valid schedule using heuristic, too many constraints{RESET}")
             else:
                 # Shuffle the courses and retry
                 for year_courses in courses_by_year:

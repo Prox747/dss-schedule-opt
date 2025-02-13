@@ -3,10 +3,11 @@ START_TIME = 8  # Start of the day
 END_TIME = 18  # End of the day
 CLASSROOMS: list[str] = ["N18", "N11", "N13"]
 
-MAX_ITER = 500
+MAX_ITER = 2000
 MAX_MOVES = 1 # max number of consecutive moves to make for the same slot
 ALPHA = 1 # weight for the empty slots
 BETA = 1 # weight for the teacher slot preference
+MAX_DAILY_HOURS = 6
 
 COLORS: list[str] = [
     "#556B2F", # Dark Olive Green

@@ -1,11 +1,11 @@
 {
   "Pierpaolo Natalini": {
     "undesired_time_slots": ["10-11-lunedi", "15-16-mercoledi"],
-    "unavailable_time_slots": ["12-13-lunedi", "14-15-mercoledi"]
+    "unavailable_time_slots": ["12-13-lunedi", "16-18-mercoledi"]
   },
   "Marcella Sama": {
     "undesired_time_slots": ["15-16-lunedi", "11-12-giovedi"],
-    "unavailable_time_slots": ["8-18-lunedi", "13-14-giovedi"]
+    "unavailable_time_slots": ["8-11-lunedi", "13-14-giovedi"]
   },
   "Francesco Riganti Fulginei": {
     "undesired_time_slots": ["10-11-martedi", "14-15-mercoledi"],
@@ -21,7 +21,7 @@
   },
   "Fabrizio Frati": {
     "undesired_time_slots": ["10-11-mercoledi", "15-16-venerdi"],
-    "unavailable_time_slots": ["14-15-mercoledi", "14-17-venerdi"]
+    "unavailable_time_slots": ["14-15-mercoledi", "10-11-venerdi"]
   },
   "Franco Milicchio": {
     "undesired_time_slots": ["9-10-lunedi", "14-15-giovedi"],
