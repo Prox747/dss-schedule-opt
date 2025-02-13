@@ -3,7 +3,8 @@ from copy import deepcopy
 
 from input_builder import extract_teachers, extract_courses, build_first_schedule
 from model import Teacher, Course, Schedule, AssignedTimeSlot
-from constants import MAX_ITER, ALPHA, BETA, MAX_MOVES, DAYS
+from constants import MAX_ITER, ALPHA, BETA, MAX_MOVES, DAYS, MAX_DAILY_HOURS
+from ansi_colors import *
 
 def find_schedule() -> Schedule:
     teachers: list[Teacher] = extract_teachers('./data/teachers.json')
@@ -24,6 +25,7 @@ def find_schedule() -> Schedule:
     # we get the first solution by just placing all the courses of one year contiguously
     schedule: Schedule = build_first_schedule(year1_courses, year2_courses, year3_courses, use_heuristic=True)
 
+    print(f"{RED}FIRST SOLUTION BY YEAR{RESET}")
     print(schedule.year_schedules[0])
     print("\n\n")
     print(schedule.year_schedules[1])
@@ -65,9 +67,9 @@ def evaluate_schedule(schedule: Schedule, teachers: list[Teacher], log: bool) ->
                         slot.time_slot.start < undesired.end and
                         slot.time_slot.end > undesired.start):
                     if log:
-                        print(f"\033[91mViolation of preference: Teacher {slot.course.teacher.name}\n" +
+                        print(f"{YELLOW}Violation of preference: Teacher {slot.course.teacher.name}\n" +
                                f"has a slot [{slot.time_slot.start}-{slot.time_slot.end}-{slot.time_slot.day if slot.time_slot.day else 'all'}]" +
-                               f"but dont want to work on\n [{undesired.start}-{undesired.end}-{undesired.day if undesired.day else 'all'}].\n\n\033[0m")
+                               f" - but dont want to work on [{undesired.start}-{undesired.end}-{undesired.day if undesired.day else 'all'}].\n\n{RESET}")
                     teacher_violation_penalty += 1  # Violation of preference
 
     return ALPHA * empty_time_slot_penalty + BETA * teacher_violation_penalty
@@ -79,27 +81,27 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
     courses_by_year = [year1_courses, year2_courses, year3_courses]
     current_schedule = initial_schedule
     best_fitness = evaluate_schedule(current_schedule, teachers, log=False)
+    
+    print(f"{GREEN}FIRST SCHEDULE FITNESS VALUE: {best_fitness}{RESET}")
 
     for num_moves in range(1, MAX_MOVES + 1):
         print(f"\033[91mTrying to improve using {num_moves}.\n\n\033[0m")
         improved: bool = False
         
         for iteration in range(MAX_ITER):
-            neighbor = current_schedule.copy()
-
             # we pick a random slot and then try to make one or more moves to enhance the fitness
             year_index = random.randint(0, len(courses_by_year) - 1)
-            slot = random.choice(neighbor.year_schedules[year_index])
+            slot = random.choice(current_schedule.year_schedules[year_index])
             for _ in range(num_moves):
                 move = random.choice(["swap", "move"])
 
                 if move == "swap":
-                    neighbor = swap_time_slots(neighbor, year_index, slot)
+                    neighbor = swap_time_slots(current_schedule, year_index, slot)
                 else:
-                    neighbor = move_to_empty_slot(neighbor, year_index, slot)
+                    neighbor = move_to_empty_slot(current_schedule, year_index, slot)
 
-            if is_schedule_valid(neighbor, False):
-                fitness = evaluate_schedule(neighbor, teachers, False)
+            if is_schedule_valid(neighbor, True):
+                fitness = evaluate_schedule(neighbor, teachers, True)
 
                 if fitness < best_fitness:
                     print(f"\033[92mFitness improved from {best_fitness} to {fitness}.\n\n\033[0m")
@@ -112,7 +114,7 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
         
         # we try adding more moves if the solution is not improving
         # TODO: this can become a treshold in the future
-        if improved:
+        if improved and best_fitness >= 4:
             break
 
     return current_schedule
@@ -127,7 +129,7 @@ def swap_time_slots(schedule: Schedule, year_index: int, slot: AssignedTimeSlot)
     year_schedule.remove(other_slot)
 
     year_schedule.append(AssignedTimeSlot(
-        classroom=other_slot.classroom,
+        classroom=slot.classroom,
         teacher=slot.course.teacher,
         course=slot.course,
         time_slot=other_slot.time_slot,
@@ -145,9 +147,9 @@ def swap_time_slots(schedule: Schedule, year_index: int, slot: AssignedTimeSlot)
     return neighbor
 
 def move_to_empty_slot(schedule: Schedule, year_index: int, slot: AssignedTimeSlot) -> Schedule:
-    neighbor = schedule.copy()
+    neighbor = deepcopy(schedule)
     year_schedule = neighbor.year_schedules[year_index]
-    empty_slots = [ts for ts in schedule.year_schedules[year_index]
+    empty_slots = [ts for ts in year_schedule
                    if not any(slot.time_slot.start == ts.time_slot.start and
                               slot.time_slot.day == ts.time_slot.day for slot in year_schedule)]
 
@@ -168,8 +170,18 @@ def move_to_empty_slot(schedule: Schedule, year_index: int, slot: AssignedTimeSl
 
 # Checks for unavailable teachers slots or overlapping teachers lessons between years
 def is_schedule_valid(schedule: Schedule, log: bool) -> bool:
+    hours_per_day: dict[str, int] = {}
     for year_schedule in schedule.year_schedules:
+        for day in DAYS:
+            hours_per_day[day] = 0
+            
         for slot in year_schedule:
+            # check if the day still has space
+            hours_per_day[slot.time_slot.day] += 2
+            if hours_per_day[slot.time_slot.day] > MAX_DAILY_HOURS:
+                return False
+            
+            # check if there are overlapping lessons of same teachers between years 
             for other_year_schedule in schedule.year_schedules:
                 if year_schedule == other_year_schedule:
                     continue
@@ -180,14 +192,15 @@ def is_schedule_valid(schedule: Schedule, log: bool) -> bool:
                        for other_slot in other_year_schedule):
                     return False
 
+            # check if there are teachers teaching in their unavailable slots
             for unavailable in slot.course.teacher.unavailable_slots:
                 if (slot.time_slot.day == unavailable.day and
                         slot.time_slot.start < unavailable.end and
                         slot.time_slot.end > unavailable.start):
                     if log:
-                        print(f"\033[91mViolation of preference: Teacher {slot.course.teacher.name}\n" +
+                        print(f"{RED}Violation of strong constraint: Teacher {slot.course.teacher.name}\n" +
                                f"has a slot [{slot.time_slot.start}-{slot.time_slot.end}-{slot.time_slot.day if slot.time_slot.day else 'all'}]" +
-                               f"but dont want to work on\n [{unavailable.start}-{unavailable.end}-{unavailable.day if unavailable.day else 'all'}].\n\n\033[0m")
+                               f" - but can't work on [{unavailable.start}-{unavailable.end}-{unavailable.day if unavailable.day else 'all'}].\n\n{RESET}")
                     return False
 
     return True
