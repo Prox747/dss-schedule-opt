@@ -22,7 +22,7 @@ def find_schedule() -> Schedule:
     year3_courses: list[Course] = [course for course in courses if course.year == 3]
 
     # we get the first solution by just placing all the courses of one year contiguously
-    schedule: Schedule = build_first_schedule(year1_courses, year2_courses, year3_courses)
+    schedule: Schedule = build_first_schedule(year1_courses, year2_courses, year3_courses, use_heuristic=True)
 
     print(schedule.year_schedules[0])
     print("\n\n")

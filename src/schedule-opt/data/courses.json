@@ -1,13 +1,13 @@
 {
-  "Geometria e Combinatoria": {
-    "weekly_hours": 8,
-    "year": 1,
-    "teacher": "Marcella Sama"
-  },
   "Analisi Matematica I": {
     "weekly_hours": 8,
     "year": 1,
     "teacher": "Pierpaolo Natalini"
+  },
+  "Geometria e Combinatoria": {
+    "weekly_hours": 8,
+    "year": 1,
+    "teacher": "Marcella Sama"
   },
   "Fondamenti di Informatica": {
     "weekly_hours": 8,

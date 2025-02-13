@@ -1,6 +1,7 @@
 import json, random
 from model import Teacher, Course, TimeSlot, AssignedTimeSlot, Schedule
 from constants import DAYS, START_TIME, END_TIME, CLASSROOMS, COLORS
+from ansi_colors import *
 
 # Load JSON data and convert to Teacher objects
 def extract_teachers(json_file_path) -> list[Teacher]:
@@ -59,13 +60,23 @@ def extract_courses(json_file_path: str, teachers: list[Teacher]) -> list[Course
 # hell function to build first schedule without using unavailable slots
 def build_first_schedule(year1_courses: list[Course],
                          year2_courses: list[Course],
-                         year3_courses: list[Course],) -> Schedule:
+                         year3_courses: list[Course],
+                         use_heuristic: bool = False) -> Schedule:
     courses_by_year = [year1_courses, year2_courses, year3_courses]
 
     for attempt in range(3): # Retry logic for randomized course orders
         schedule = Schedule(
             year_schedules=[]
         )
+        
+        # we order the courses of each year in non increasing order of number
+        # of unavailable slots expressed by the teacher's course
+        if use_heuristic:
+            for year_courses in courses_by_year:
+                year_courses.sort(key=lambda course: course.teacher.get_total_unavailable_hours(), reverse=True)
+        
+            print(f"{RED}FIRST SOLUTION BUILT WITH HEURISTIC{RESET}")
+            print(courses_by_year)
         
         try:
             # For each year
@@ -126,11 +137,15 @@ def build_first_schedule(year1_courses: list[Course],
 
             return schedule
         except ValueError:
-            # Shuffle the courses and retry
-            for year_courses in courses_by_year:
-                random.shuffle(year_courses)
+            if use_heuristic:
+                raise RuntimeError(f"Unable to build a valid schedule using heuristic, too many constraints")
+            else:
+                # Shuffle the courses and retry
+                for year_courses in courses_by_year:
+                    random.shuffle(year_courses)
 
     raise RuntimeError(f"Unable to build a valid schedule after {attempt + 1} attempts")
+
 
 def is_slot_valid(time_slot: TimeSlot, course: Course, year_schedule: list[AssignedTimeSlot], schedule: Schedule) -> bool:
     # Check if the slot is already occupied in the current year

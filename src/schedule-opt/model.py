@@ -12,6 +12,14 @@ class Teacher(BaseModel):
     name: str
     unavailable_slots: list[TimeSlot]
     undesired_slots: list[TimeSlot]
+    
+    def get_total_unavailable_hours(self) -> int:
+        hours_total = 0
+        for time_slot in self.unavailable_slots:
+            hours_total += (time_slot.end - time_slot.start)
+            
+        return hours_total
+        
 
 
 class Course(BaseModel):
