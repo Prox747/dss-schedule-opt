@@ -94,52 +94,51 @@ def build_first_schedule(year1_courses: list[Course],
                     hours_remaining = course.weekly_hours
                     color_index = (color_index + 1) % len(COLORS)
             
-                    while hours_remaining > 0:
-                        valid_slot_found = False
+                    valid_slot_found = False
 
-                        for day in DAYS:
-                            for current_time in range(START_TIME, END_TIME, 2):
-                                slot_end = current_time + 2
-                                
-                                if slot_end > END_TIME or (hours_left_per_day[day] == 0):
-                                    continue
-
-                                time_slot = TimeSlot(
-                                    start=current_time,
-                                    end=slot_end,
-                                    day=day
-                                )
-
-                                # Check if the slot is valid
-                                if not is_slot_valid(time_slot, course, year_schedule, schedule):
-                                    continue
-
-                                # Assign the time slot
-                                year_schedule.append(AssignedTimeSlot(
-                                    classroom=CLASSROOMS[i],
-                                    course=course,
-                                    time_slot=time_slot,
-                                    color_hex=COLORS[color_index]
-                                ))
-
-                                # we scan for all slots possible contigously and if we find one
-                                # we just descrease the hours to schedule for that course and
-                                # break the days and time slots cycles to return to the outer while loop.
-                                # There we check if we need to assign more hours or not and if we
-                                # successfullt assigned a slot or not.
-                                # We also need to descrease the hours still available for that day
-                                hours_remaining -= 2
-                                hours_left_per_day[day] -= 2
-                                valid_slot_found = True
-                                break
+                    for day in DAYS:
+                        if hours_remaining <= 0:
+                            break
+                        for current_time in range(START_TIME, END_TIME, 2):
+                            slot_end = current_time + 2
                             
-                            if valid_slot_found:
-                                break
+                            if slot_end > END_TIME or (hours_left_per_day[day] == 0):
+                                continue
 
-                        if not valid_slot_found:
-                            print(f"\033[91mCannot find a slot for {course}, hours remaining: {hours_remaining}.\n\n\033[0m")
-                            print(year_schedule)
-                            raise ValueError("Unable to find valid slot for course")
+                            time_slot = TimeSlot(
+                                start=current_time,
+                                end=slot_end,
+                                day=day
+                            )
+
+                            # Check if the slot is valid
+                            if not is_slot_valid(time_slot, course, year_schedule, schedule):
+                                continue
+
+                            # Assign the time slot
+                            year_schedule.append(AssignedTimeSlot(
+                                classroom=CLASSROOMS[i],
+                                course=course,
+                                time_slot=time_slot,
+                                color_hex=COLORS[color_index]
+                            ))
+
+                            # we scan for all slots possible contigously and if we find one
+                            # we just descrease the hours to schedule for that course and
+                            # break time slots cycle to return to the day cycle loop and we 
+                            # continue to assign on unassigned days yet.
+                            # For every slot assigned, we then check if we need to assign more
+                            # hours or not and if we successfully assigned a slot or not.
+                            # We also need to descrease the hours still available for that day
+                            hours_remaining -= 2
+                            hours_left_per_day[day] -= 2
+                            valid_slot_found = True
+                            break
+
+                    if not valid_slot_found:
+                        print(f"\033[91mCannot find a slot for {course}, hours remaining: {hours_remaining}.\n\n\033[0m")
+                        print(year_schedule)
+                        raise ValueError("Unable to find valid slot for course")
 
                 schedule.year_schedules.append(year_schedule)
 
