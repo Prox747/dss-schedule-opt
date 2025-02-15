@@ -104,8 +104,8 @@ function populateSchedule(data: ScheduleDto) {
     });
 
     // write query time taken
-    const query_time_ms = document.getElementById('query-time') as HTMLElement;
-    query_time_ms.textContent = `Tempo di calcolo: ${data.query_time_ms} ms`;
+    const info = document.getElementById('query-info') as HTMLElement;
+    info.textContent = `🕒Tempo di calcolo: ${data.query_time_ms} ms    👋Fitness Iniziale: ${data.init_fitness}    💪Fitness Migliore: ${data.best_fitness}`;
 }
 
 async function get_schedule() {

@@ -15,5 +15,7 @@ class ScheduleDto(BaseModel):
     year_schedules: list[
         list[TimeSlotDto]
     ]
+    init_fitness: int
+    best_fitness: int
     query_time_ms: int
     

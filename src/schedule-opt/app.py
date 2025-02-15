@@ -5,9 +5,11 @@ from local_search import find_schedule
 import time
     
 
-def create_dto(schedule: Schedule, elapsed_time_ms: float) -> ScheduleDto:
+def create_dto(schedule: Schedule, elapsed_time_ms: float, init_fitness: int, best_fitness: int) -> ScheduleDto:
     schedule_dto = ScheduleDto(
         year_schedules=[],
+        init_fitness=init_fitness,
+        best_fitness=best_fitness,
         query_time_ms=elapsed_time_ms
     )
     
@@ -38,11 +40,11 @@ def get_schedule():
     start_time: float = time.time()
     
     # TODO: find schedule
-    schedule: Schedule = find_schedule()
+    schedule, init_fitness, best_fitness = find_schedule()
 
     elapsed_time: float = (time.time() - start_time) * 1000
 
-    response = create_dto(schedule, elapsed_time)
+    response = create_dto(schedule, elapsed_time, init_fitness, best_fitness)
 
     return response
 

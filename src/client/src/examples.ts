@@ -66,4 +66,6 @@ export const example_output: ScheduleDto = {
       ]
     ],
     query_time_ms: 123,
+    init_fitness: 545,
+    best_fitness: 545
   };

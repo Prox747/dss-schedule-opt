@@ -17,5 +17,7 @@ export interface ScheduleDto {
         TimeSlotDto[],
         TimeSlotDto[]
     ]
+    init_fitness: number
+    best_fitness: number
     query_time_ms: number
 }
