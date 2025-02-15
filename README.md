@@ -8,6 +8,7 @@ Pretty simple, we just try to allocate the slots for the most demanding teachers
 Our schedule is worse if it contains holes between lessons or if teachers' preferences are not met. Hence, for each iteration, we keep two lists of slots. These represent the best slots to move/swap depending on some criteria. 
  - For moving to an empty slot: we move a slot only if it does not create a hole after moving (so the first or last slot of a day).
  - For swapping: we prefer to swap the slots that are not at the start of end (middle) because we cannot move them.
+Then we do a Variable Neighbourhood Search trying to improve the solution using slots of the same day. If it does not improve we try to do the move using other days as well.
 
 ## Teachers input examples
 To test the system 5 examples have been created in incresing difficulty (each slot is min 2 hours long). Each example contains underised and unavailable time slots expressed by each fictional teacher.
