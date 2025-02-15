@@ -1,0 +1,50 @@
+{
+    "Pierpaolo Natalini": {
+      "undesired_time_slots": ["08-10-lunedi", "10-12-martedi"],
+      "unavailable_time_slots": ["12-14-lunedi", "14-16-martedi"]
+    },
+    "Marcella Sama": {
+      "undesired_time_slots": ["09-11-lunedi", "15-18-martedi"],
+      "unavailable_time_slots": ["08-10-lunedi", "13-15-giovedi"]
+    },
+    "Francesco Riganti Fulginei": {
+      "undesired_time_slots": ["10-12-martedi", "14-16-mercoledi"],
+      "unavailable_time_slots": ["12-14-martedi", "16-18-mercoledi"]
+    },
+    "Maurizio Patrignani": {
+      "undesired_time_slots": ["11-13-martedi", "15-17-mercoledi"],
+      "unavailable_time_slots": ["10-12-martedi", "13-15-mercoledi"]
+    },
+    "Paolo Merialdo": {
+      "undesired_time_slots": ["13-15-giovedi", "15-17-venerdi"],
+      "unavailable_time_slots": ["12-14-venerdi", "14-16-venerdi"]
+    },
+    "Fabrizio Frati": {
+      "undesired_time_slots": ["08-10-mercoledi", "10-12-venerdi"],
+      "unavailable_time_slots": ["12-14-mercoledi", "14-16-venerdi"]
+    },
+    "Franco Milicchio": {
+      "undesired_time_slots": ["10-12-lunedi", "16-18-giovedi"],
+      "unavailable_time_slots": ["12-14-lunedi", "14-16-giovedi"]
+    },
+    "Giuseppe Di Battista": {
+      "undesired_time_slots": ["11-13-lunedi", "15-17-venerdi"],
+      "unavailable_time_slots": ["13-15-lunedi", "16-18-venerdi"]
+    },
+    "Marta Cialdea": {
+      "undesired_time_slots": ["14-16-martedi", "16-18-giovedi"],
+      "unavailable_time_slots": ["12-14-martedi", "15-17-giovedi"]
+    },
+    "Gaia Nicosia": {
+      "undesired_time_slots": ["09-11-lunedi", "13-15-mercoledi"],
+      "unavailable_time_slots": ["08-10-lunedi", "15-17-mercoledi"]
+    },
+    "Romolo Marotta": {
+      "undesired_time_slots": ["12-14-lunedi", "14-16-mercoledi"],
+      "unavailable_time_slots": ["08-10-lunedi", "16-18-mercoledi"]
+    },
+    "Tecla De Luca": {
+      "undesired_time_slots": ["11-13-martedi", "15-17-giovedi"],
+      "unavailable_time_slots": ["13-15-martedi", "16-18-giovedi"]
+    }
+  }  
