@@ -22,4 +22,5 @@ COLORS: list[str] = [
     "#7B68EE", # Medium Slate Blue
     "#708090", # Slate Gray
     "#9ACD32", # Yellow-Green
+    "#D2691E", # Chocolate
 ]
