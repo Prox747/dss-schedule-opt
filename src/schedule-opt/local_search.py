@@ -4,7 +4,7 @@ from collections import defaultdict
 
 from input_builder import extract_teachers, extract_courses, build_first_schedule
 from model import Teacher, Course, Schedule, AssignedTimeSlot, TimeSlot
-from constants import MAX_ITER, ALPHA, BETA, DAYS, MAX_DAILY_HOURS, START_TIME, END_TIME, MOVE_TYPE
+from constants import MAX_ITER, MAX_ITER_NO_IMPROVEMENT, ALPHA, BETA, DAYS, MAX_DAILY_HOURS, START_TIME, END_TIME, MOVE_TYPE
 from ansi_colors import *
 
 debug_cont = {
@@ -14,8 +14,10 @@ debug_cont = {
     "overlap": 0
 }
 
+debug_log = False
+
 def find_schedule() -> Schedule:
-    teachers: list[Teacher] = extract_teachers('./data/teachers_easy.json')
+    teachers: list[Teacher] = extract_teachers('./data/teachers_lvl_1.json')
     for teacher in teachers:
         print(teacher)
         print("\n\n")
@@ -96,7 +98,8 @@ def evaluate_schedule(schedule: Schedule, log: bool):
         
     fitness = ALPHA * num_empty_slots + BETA * num_violations
 
-    print(f"""{YELLOW}--------- EMPTY SLOTS ----------\n
+    if log:
+        print(f"""{YELLOW}--------- EMPTY SLOTS ----------\n
                     YEAR 1: {empty_slots_by_year[0]}\n
                     YEAR 2: {empty_slots_by_year[1]}\n
                     YEAR 3: {empty_slots_by_year[2]}{RESET}\n""")
@@ -164,8 +167,9 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
     courses_by_year = [year1_courses, year2_courses, year3_courses]
     num_of_years = len(courses_by_year)
     current_schedule = initial_schedule
-    init_fitness, violations_start_end_by_year, violations_middle_by_year, holes_by_year = evaluate_schedule(current_schedule, log=True)
+    init_fitness, violations_start_end_by_year, violations_middle_by_year, holes_by_year = evaluate_schedule(current_schedule, log=debug_log)
     
+    cont_last_improvement = 0
     best_fitness = init_fitness
     
     print(f"{GREEN}FIRST SCHEDULE FITNESS VALUE: {best_fitness}{RESET}\n")
@@ -174,8 +178,10 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
     #      empty_slots: {empty_slots_by_year}{RESET}")
 
     for iteration in range(MAX_ITER):
+        print(f"#########################   ITERATION {iteration + 1}   #########################\n")
         improved = False
         years_to_optimize = [0,1,2]
+        last_best = best_fitness # needed to limit iterations of non improving solutions
     
         # we check if we still need to optimize a particular year
         # if not we remove it from the years_to_optimize list
@@ -210,8 +216,8 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
                 neighbor, swapped_slot = swap_time_slots(current_schedule, year_index, slot, slots_to_choose_from=slots_to_choose_from)
                 
                 # Update Fitness
-                if is_schedule_valid(neighbor, True):
-                    fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_holes_by_year = evaluate_schedule(neighbor, True)
+                if is_schedule_valid(neighbor, log=debug_log):
+                    fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_holes_by_year = evaluate_schedule(neighbor, log=debug_log)
 
                     if fitness < best_fitness:
                         print(f"{GREEN}Fitness improved from {best_fitness} to {fitness}.\n\n{RESET}")
@@ -230,13 +236,12 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
                 day_slots.append(slot)
                 slots_to_choose_from = [s for s in year_schedule if s not in day_slots]
                 
-                print(f"Didn't improve on day slots, trying swapping between days\n")
                 while slots_to_choose_from != [] and improved == False:
                     neighbor, swapped_slot = swap_time_slots(current_schedule, year_index, slot, slots_to_choose_from=slots_to_choose_from)
                     
                     # Update Fitness
-                    if is_schedule_valid(neighbor, True):
-                        fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_holes_by_year = evaluate_schedule(neighbor, True)
+                    if is_schedule_valid(neighbor, log=debug_log):
+                        fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_holes_by_year = evaluate_schedule(neighbor, log=debug_log)
 
                         if fitness < best_fitness:
                             print(f"{GREEN}Fitness improved from {best_fitness} to {fitness}.\n\n{RESET}")
@@ -257,8 +262,8 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
                     neighbor = move_to_empty_slot(current_schedule, year_index, slot, empty_slot)
                     
                     # Update Fitness
-                    if is_schedule_valid(neighbor, True):
-                        fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_holes_by_year = evaluate_schedule(neighbor, True)
+                    if is_schedule_valid(neighbor, log=debug_log):
+                        fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_holes_by_year = evaluate_schedule(neighbor, log=debug_log)
 
                         if fitness <= best_fitness:
                             print(f"{GREEN}Fitness improved from {best_fitness} to {fitness}.\n\n{RESET}")
@@ -296,8 +301,8 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
                     neighbor = move_to_empty_slot(current_schedule, year_index, start_end_slot, hole)
                     
                     # Update Fitness
-                    if is_schedule_valid(neighbor, True):
-                        fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_holes_by_year = evaluate_schedule(neighbor, True)
+                    if is_schedule_valid(neighbor, log=debug_log):
+                        fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_holes_by_year = evaluate_schedule(neighbor, log=debug_log)
 
                         if fitness < best_fitness:
                             print(f"{GREEN}Fitness improved from {best_fitness} to {fitness}.\n\n{RESET}")
@@ -314,8 +319,8 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
                             neighbor = move_to_empty_slot(current_schedule, year_index, start_end_slot, empty_slot)
                             
                             # Update Fitness
-                            if is_schedule_valid(neighbor, True):
-                                fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_holes_by_year = evaluate_schedule(neighbor, True)
+                            if is_schedule_valid(neighbor, log=debug_log):
+                                fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_holes_by_year = evaluate_schedule(neighbor, log=debug_log)
 
                                 if fitness < best_fitness:
                                     print(f"{GREEN}Fitness improved from {best_fitness} to {fitness}.\n\n{RESET}")
@@ -335,13 +340,21 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
         # if not improved and (debug_list_length -(len(violations_middle_by_year[year_index]) + len(violations_start_end_by_year[year_index]) + len(holes_by_year[year_index])) != 0):
             #raise RuntimeError("Lunghezza liste di valutazione cambiata!!!")
         
+        if not improved or last_best == best_fitness:
+            cont_last_improvement += 1
+            if cont_last_improvement == MAX_ITER_NO_IMPROVEMENT:
+                print(f"{RED}No improvement after {MAX_ITER_NO_IMPROVEMENT} iterations!{RESET}")
+                break
+        else:
+            cont_last_improvement = 0
+        
         if best_fitness == 0:
             break
 
     print(f"EVAL OF FINAL SCHEDULE:\n")
-    evaluate_schedule(current_schedule, True)
+    evaluate_schedule(current_schedule, log=True)
     
-    print(f"{CYAN}Finished after {MAX_ITER} iterations).\
+    print(f"{CYAN}Finished after {MAX_ITER if cont_last_improvement < MAX_ITER_NO_IMPROVEMENT else MAX_ITER_NO_IMPROVEMENT} iterations).\
                   \nInitial Fitness: {init_fitness} --- Best Fitness: {best_fitness}\n\
                   {RED}DEBUG: {debug_cont.items()}\n")
     return current_schedule, init_fitness, best_fitness
