@@ -116,7 +116,24 @@ function populateSchedule(data: ScheduleDto) {
 }
 
 async function get_schedule() {
-    await axios.get(`http://localhost:13000/api/schedule`).then((response) => {
+    var url = `http://localhost:13000/api/schedule`
+    var max_iter_bool = false
+
+    const max_iter_input = document.getElementById('max_iter_form') as HTMLInputElement;
+    if (max_iter_input.value != null && max_iter_input.value.trim() && (max_iter_input.value != max_iter_input.placeholder)) {
+        console.log("max iter non è none")
+        url = `${url}?max_iter=${max_iter_input.value}`
+        max_iter_bool = true
+    }
+
+    const max_iter_no_improv_input = document.getElementById('max_iter_no_improv_form') as HTMLInputElement;
+    if (max_iter_no_improv_input.value != null && max_iter_no_improv_input.value.trim() && (max_iter_no_improv_input.value != max_iter_no_improv_input.placeholder)) {
+        url = `${url}${max_iter_bool ? "&" : "?"}max_iter_no_improv=${max_iter_no_improv_input.value}`
+    }
+
+    console.log(url)
+   
+    await axios.get(url).then((response) => {
         console.log(response.data);
         populateSchedule(response.data);
 

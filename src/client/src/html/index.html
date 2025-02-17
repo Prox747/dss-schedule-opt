@@ -11,15 +11,35 @@
         <title>Schedule-OPT</title>
     </head>
 <body>
+
   <!-- Button to api call-->
-  <div class="d-flex justify-content-center">
-    <button id="get-schedule-btn" class="btn btn-primary btn-lg mt-5" type="button">
-      <div class="d-flex align-items-center">
-        <span role="status">Calcola orario</span>
-        <span id="spinner" class="spinner-border spinner-border-sm ms-2 d-none" aria-hidden="true"></span>
-      </div>
-    </button>
+  <div class="d-flex justify-content-center align-items-center mt-4">
+    <div class="btn-group" role="group" aria-label="Basic example">
+      <button id="get-schedule-btn" class="btn btn-primary btn-lg border border-1 border-white" type="button">
+        <div class="d-flex align-items-center">
+          <span role="status">Calcola orario</span>
+          <span id="spinner" class="spinner-border spinner-border-sm ms-2 d-none" aria-hidden="true"></span>
+        </div>
+      </button>
+      <button class="btn btn-primary border border-1 border-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-expanded="false" aria-controls="collapseWidthExample">
+        ⚙️  
+      </button>
+    </div>
   </div>
+
+  <div>
+    <div class="collapse collapse-vertical row g-0 justify-content-center mt-3" id="collapseWidthExample">
+      <div class="form-floating me-3" style="width: 280px;">
+        <input id="max_iter_form" type="number" class="form-control" placeholder="Default">
+        <label for="floatingInput">Maximum number of Iterations</label>
+      </div>
+      <div class="form-floating" style="width: 400px;">
+        <input id="max_iter_no_improv_form" type="number" class="form-control" placeholder="Default">
+        <label for="floatingPassword">Number of Iterations to do without improvement</label>
+      </div>
+    </div>
+  </div>
+  
   
   <!-- Query info (milliseconds, init_fitness, best_fitness) -->
   <pre id="query-info" class="text-light fs-6 text-center my-4"></pre>

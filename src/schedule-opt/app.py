@@ -1,7 +1,9 @@
 from fastapi import FastAPI, Query
+from typing import Optional
 from dto import ScheduleDto, TimeSlotDto
 from model import Schedule, TimeSlot
 from local_search import find_schedule
+from constants import MAX_ITER, MAX_ITER_NO_IMPROVEMENT
 import time
     
 
@@ -35,12 +37,18 @@ def create_dto(schedule: Schedule, elapsed_time_ms: float, init_fitness: int, be
 app = FastAPI()
 
 @app.get("/api/schedule", response_model=ScheduleDto)
-def get_schedule():
-    
+def get_schedule(
+    max_iter: Optional[str] = Query(None, description="Max iterations"),
+    max_iter_no_improv: Optional[str] = Query(None, description="Max iterations since last improvement")
+):
     start_time: float = time.time()
     
+    print(max_iter)
+    max_iter = int(max_iter) if max_iter != None else MAX_ITER
+    max_iter_no_improv = int(max_iter_no_improv) if max_iter_no_improv != None else MAX_ITER_NO_IMPROVEMENT
+    
     # TODO: find schedule
-    schedule, init_fitness, best_fitness = find_schedule()
+    schedule, init_fitness, best_fitness = find_schedule(max_iter, max_iter_no_improv)
 
     elapsed_time: float = (time.time() - start_time) * 1000
 

@@ -16,7 +16,7 @@ debug_cont = {
 
 debug_log = False
 
-def find_schedule() -> Schedule:
+def find_schedule(max_iter: int = None, max_iter_no_improv: int = None) -> Schedule:
     teachers: list[Teacher] = extract_teachers('./data/teachers_lvl_1.json')
     for teacher in teachers:
         print(teacher)
@@ -42,7 +42,12 @@ def find_schedule() -> Schedule:
     print("\n\n")
     print(schedule.year_schedules[2])
     
-    best_schedule, init_fitness, best_fitness = local_search(schedule, teachers, year1_courses, year2_courses, year3_courses)
+    if max_iter == None:
+        max_iter = MAX_ITER
+    if max_iter_no_improv == None:
+        max_iter_no_improv = MAX_ITER_NO_IMPROVEMENT 
+    
+    best_schedule, init_fitness, best_fitness = local_search(schedule, teachers, year1_courses, year2_courses, year3_courses, max_iter, max_iter_no_improv)
     
     return best_schedule, init_fitness, best_fitness
 
@@ -161,8 +166,8 @@ def choose_slot_and_move(violations_middle, violations_start_end, empty_slots) -
         
 
 def local_search(initial_schedule: Schedule, teachers: list[Teacher],
-                 year1_courses: list[Course], year2_courses: list[Course],
-                 year3_courses: list[Course]) -> Schedule:
+                 year1_courses: list[Course], year2_courses: list[Course], year3_courses: list[Course],
+                 max_iter: int, max_iter_no_improv: int) -> Schedule:
     
     courses_by_year = [year1_courses, year2_courses, year3_courses]
     num_of_years = len(courses_by_year)
@@ -176,8 +181,8 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
     #print(f"{CYAN} violations middle: {violations_middle_by_year} \n \
     #      violations start-end: {violations_start_end_by_year} \n \
     #      empty_slots: {empty_slots_by_year}{RESET}")
-
-    for iteration in range(MAX_ITER):
+    
+    for iteration in range(max_iter):
         print(f"#########################   ITERATION {iteration + 1}   #########################\n")
         improved = False
         years_to_optimize = [0,1,2]
@@ -342,8 +347,8 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
         
         if not improved or last_best == best_fitness:
             cont_last_improvement += 1
-            if cont_last_improvement == MAX_ITER_NO_IMPROVEMENT:
-                print(f"{RED}No improvement after {MAX_ITER_NO_IMPROVEMENT} iterations!{RESET}")
+            if cont_last_improvement == max_iter_no_improv:
+                print(f"{RED}No improvement after {max_iter_no_improv} iterations!{RESET}")
                 break
         else:
             cont_last_improvement = 0
@@ -354,7 +359,7 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
     print(f"EVAL OF FINAL SCHEDULE:\n")
     evaluate_schedule(current_schedule, log=True)
     
-    print(f"{CYAN}Finished after {MAX_ITER if cont_last_improvement < MAX_ITER_NO_IMPROVEMENT else MAX_ITER_NO_IMPROVEMENT} iterations).\
+    print(f"{CYAN}Finished after {iteration + 1} iterations (MAX = {max_iter} --- MAX NO IMPROV = {max_iter_no_improv}).\
                   \nInitial Fitness: {init_fitness} --- Best Fitness: {best_fitness}\n\
                   {RED}DEBUG: {debug_cont.items()}\n")
     return current_schedule, init_fitness, best_fitness
