@@ -1,0 +1,219 @@
+{
+    "Pierpaolo Natalini": {
+      "undesired_time_slots": [
+        "08-10-lunedi",
+        "10-12-lunedi",
+        "12-16-martedi",
+        "14-16-mercoledi",
+        "16-18-giovedi",
+        "08-12-venerdi"
+      ],
+      "unavailable_time_slots": [
+        "09-13-lunedi",
+        "08-12-martedi",
+        "13-17-mercoledi",
+        "10-14-giovedi",
+        "15-18-venerdi",
+        "12-16-lunedi"
+      ]
+    },
+    "Marcella Sama": {
+      "undesired_time_slots": [
+        "08-10-martedi",
+        "10-12-martedi",
+        "12-16-lunedi",
+        "14-16-giovedi",
+        "16-18-giovedi",
+        "08-12-venerdi"
+      ],
+      "unavailable_time_slots": [
+        "09-13-martedi",
+        "08-12-lunedi",
+        "13-17-giovedi",
+        "10-14-venerdi",
+        "15-18-lunedi",
+        "12-16-giovedi"
+      ]
+    },
+    "Francesco Riganti Fulginei": {
+      "undesired_time_slots": [
+        "08-10-giovedi",
+        "10-12-giovedi",
+        "12-16-martedi",
+        "14-16-venerdi",
+        "16-18-lunedi",
+        "08-12-mercoledi"
+      ],
+      "unavailable_time_slots": [
+        "09-13-giovedi",
+        "08-12-martedi",
+        "13-17-venerdi",
+        "10-14-lunedi",
+        "15-18-mercoledi",
+        "12-16-giovedi"
+      ]
+    },
+    "Maurizio Patrignani": {
+      "undesired_time_slots": [
+        "08-10-mercoledi",
+        "10-12-mercoledi",
+        "12-16-lunedi",
+        "14-16-martedi",
+        "16-18-venerdi",
+        "08-12-giovedi"
+      ],
+      "unavailable_time_slots": [
+        "09-13-mercoledi",
+        "08-12-lunedi",
+        "13-17-martedi",
+        "10-14-venerdi",
+        "15-18-giovedi",
+        "12-16-mercoledi"
+      ]
+    },
+    "Paolo Merialdo": {
+      "undesired_time_slots": [
+        "08-10-lunedi",
+        "10-12-lunedi",
+        "12-16-giovedi",
+        "14-16-venerdi",
+        "16-18-martedi",
+        "08-12-mercoledi"
+      ],
+      "unavailable_time_slots": [
+        "09-13-lunedi",
+        "08-12-giovedi",
+        "13-17-venerdi",
+        "10-14-martedi",
+        "15-18-mercoledi",
+        "12-16-lunedi"
+      ]
+    },
+    "Fabrizio Frati": {
+      "undesired_time_slots": [
+        "08-10-giovedi",
+        "10-12-giovedi",
+        "12-16-venerdi",
+        "14-16-lunedi",
+        "16-18-martedi",
+        "08-12-mercoledi"
+      ],
+      "unavailable_time_slots": [
+        "09-13-giovedi",
+        "08-12-venerdi",
+        "13-17-lunedi",
+        "10-14-martedi",
+        "15-18-mercoledi",
+        "12-16-giovedi"
+      ]
+    },
+    "Franco Milicchio": {
+      "undesired_time_slots": [
+        "08-10-lunedi",
+        "10-12-lunedi",
+        "12-16-mercoledi",
+        "14-16-giovedi",
+        "16-18-martedi",
+        "08-12-venerdi"
+      ],
+      "unavailable_time_slots": [
+        "09-13-lunedi",
+        "08-12-mercoledi",
+        "13-17-giovedi",
+        "10-14-martedi",
+        "15-18-venerdi",
+        "12-16-lunedi"
+      ]
+    },
+    "Giuseppe Di Battista": {
+      "undesired_time_slots": [
+        "08-10-martedi",
+        "10-12-martedi",
+        "12-16-lunedi",
+        "14-16-venerdi",
+        "16-18-giovedi",
+        "08-12-mercoledi"
+      ],
+      "unavailable_time_slots": [
+        "09-13-martedi",
+        "08-12-lunedi",
+        "13-17-venerdi",
+        "10-14-giovedi",
+        "15-18-mercoledi",
+        "12-16-martedi"
+      ]
+    },
+    "Marta Cialdea": {
+      "undesired_time_slots": [
+        "08-10-venerdi",
+        "10-12-venerdi",
+        "12-16-martedi",
+        "14-16-lunedi",
+        "16-18-giovedi",
+        "08-12-mercoledi"
+      ],
+      "unavailable_time_slots": [
+        "09-13-venerdi",
+        "08-12-martedi",
+        "13-17-lunedi",
+        "10-14-giovedi",
+        "15-18-mercoledi",
+        "12-16-venerdi"
+      ]
+    },
+    "Gaia Nicosia": {
+      "undesired_time_slots": [
+        "08-10-lunedi",
+        "10-12-lunedi",
+        "12-16-mercoledi",
+        "14-16-giovedi",
+        "16-18-martedi",
+        "08-12-venerdi"
+      ],
+      "unavailable_time_slots": [
+        "09-13-lunedi",
+        "08-12-mercoledi",
+        "13-17-giovedi",
+        "10-14-martedi",
+        "15-18-venerdi",
+        "12-16-lunedi"
+      ]
+    },
+    "Romolo Marotta": {
+      "undesired_time_slots": [
+        "08-10-martedi",
+        "10-12-martedi",
+        "12-16-lunedi",
+        "14-16-giovedi",
+        "16-18-mercoledi",
+        "08-12-venerdi"
+      ],
+      "unavailable_time_slots": [
+        "09-13-martedi",
+        "08-12-lunedi",
+        "13-17-giovedi",
+        "10-14-mercoledi",
+        "15-18-mercoledi",
+        "12-16-martedi"
+      ]
+    },
+    "Tecla De Luca": {
+      "undesired_time_slots": [
+        "08-10-giovedi",
+        "10-12-giovedi",
+        "12-16-martedi",
+        "14-16-lunedi",
+        "16-18-venerdi",
+        "08-12-mercoledi"
+      ],
+      "unavailable_time_slots": [
+        "09-13-giovedi",
+        "08-12-martedi",
+        "13-17-lunedi",
+        "10-14-venerdi",
+        "15-18-lunedi",
+        "12-16-giovedi"
+      ]
+    }
+  }
+  
