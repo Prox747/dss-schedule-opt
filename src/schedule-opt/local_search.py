@@ -4,7 +4,7 @@ from collections import defaultdict
 
 from input_builder import extract_teachers, extract_courses, build_first_schedule
 from model import Teacher, Course, Schedule, AssignedTimeSlot, TimeSlot
-from constants import MAX_ITER, MAX_ITER_SLOT, ALPHA, BETA, DAYS, MAX_DAILY_HOURS, START_TIME, END_TIME, MOVE_TYPE
+from constants import MAX_ITER, ALPHA, BETA, DAYS, MAX_DAILY_HOURS, START_TIME, END_TIME, MOVE_TYPE
 from ansi_colors import *
 
 debug_cont = {
@@ -43,6 +43,7 @@ def find_schedule() -> Schedule:
     best_schedule, init_fitness, best_fitness = local_search(schedule, teachers, year1_courses, year2_courses, year3_courses)
     
     return best_schedule, init_fitness, best_fitness
+
 
 def evaluate_schedule(schedule: Schedule, log: bool):
     empty_slots_by_year: list[list[TimeSlot]] = []
@@ -95,7 +96,41 @@ def evaluate_schedule(schedule: Schedule, log: bool):
         
     fitness = ALPHA * num_empty_slots + BETA * num_violations
 
+    print(f"""{YELLOW}--------- EMPTY SLOTS ----------\n
+                    YEAR 1: {empty_slots_by_year[0]}\n
+                    YEAR 2: {empty_slots_by_year[1]}\n
+                    YEAR 3: {empty_slots_by_year[2]}{RESET}\n""")
+
     return fitness, violations_start_end_by_year, violations_middle_by_year, empty_slots_by_year
+
+
+def get_start_end_slots_for_year(year_schedule: list[AssignedTimeSlot]) -> list[AssignedTimeSlot]:
+    start_end_slots = []
+    for day in DAYS:
+        daily_slots_sorted = sorted(
+                    [s for s in year_schedule if s.time_slot.day == day],
+                    key=lambda s: s.time_slot.start
+                )
+        for i, slot in enumerate(daily_slots_sorted):
+        # Determine if this is the first or last lesson of the day
+            if (i == 0 or i == len(daily_slots_sorted) - 1):
+                start_end_slots.append(slot)
+    
+    return start_end_slots
+
+
+def choose_slot_for_swap(violations_middle, violations_start_end):
+    slot = None
+    
+    # we try switching the middle ones, as we cannot move them (we create holes)
+    if violations_middle == []:
+        slot = random.choice(violations_start_end)
+    if violations_start_end == []:
+        slot = random.choice(violations_middle)
+    if violations_start_end != [] and violations_middle != []:
+        slot = random.choice(violations_middle if (random.random() < 0.7) else violations_start_end)
+    
+    return slot
 
 
 def choose_slot_and_move(violations_middle, violations_start_end, empty_slots) -> tuple[str, AssignedTimeSlot]:
@@ -103,19 +138,21 @@ def choose_slot_and_move(violations_middle, violations_start_end, empty_slots) -
     
     # if there are a lot of violations of preference we try to address them
     if len(violations_middle) + len(violations_start_end) > len(empty_slots):
-        # we try switching the middle ones, as we cannot move them (we create holes)
-        if violations_middle == []:
-            slot = random.choice(violations_start_end)
-        if violations_start_end == []:
-            slot = random.choice(violations_middle)
-        if violations_start_end != [] and violations_middle != []:
-            slot = random.choice(violations_middle if (random.random() < 0.7) else violations_start_end)
+        slot = choose_slot_for_swap(violations_middle, violations_start_end)
         move = MOVE_TYPE.SWAP.value
     # else we choose to fill the holes
     elif len(empty_slots) >= len(violations_middle) + len(violations_start_end):
-        if violations_start_end != []:
-            slot = random.choice(violations_start_end)
         move = MOVE_TYPE.MOVE.value
+        
+    # if we have th same number we choose at random
+    elif len(empty_slots) == len(violations_middle) + len(violations_start_end):
+        # swap
+        if random.random() < 0.5:
+            slot = choose_slot_for_swap(violations_middle, violations_start_end)
+            move = MOVE_TYPE.SWAP.value
+        else:
+            # move
+            move = MOVE_TYPE.MOVE.value
             
     return move, slot
         
@@ -125,8 +162,9 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
                  year3_courses: list[Course]) -> Schedule:
     
     courses_by_year = [year1_courses, year2_courses, year3_courses]
+    num_of_years = len(courses_by_year)
     current_schedule = initial_schedule
-    init_fitness, violations_start_end_by_year, violations_middle_by_year, empty_slots_by_year = evaluate_schedule(current_schedule, log=True)
+    init_fitness, violations_start_end_by_year, violations_middle_by_year, holes_by_year = evaluate_schedule(current_schedule, log=True)
     
     best_fitness = init_fitness
     
@@ -137,64 +175,74 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
 
     for iteration in range(MAX_ITER):
         improved = False
-        # we pick an optimal slot and then try to make a move to make it better
-        year_index = random.randint(0, len(courses_by_year) - 1)
-        year_scedule = current_schedule.year_schedules[year_index]
+        years_to_optimize = [0,1,2]
+    
+        # we check if we still need to optimize a particular year
+        # if not we remove it from the years_to_optimize list
+        for i in range(0, num_of_years):
+            if len(violations_middle_by_year[i]) + len(violations_start_end_by_year[i]) + len(holes_by_year[i]) == 0:
+                years_to_optimize.remove(i)
+            
+        # we pick a random year still to optimize
+        year_index = random.choice(years_to_optimize)
+        # THIS IS A TEST debug_list_length += len(violations_middle_by_year[year_index]) + len(violations_start_end_by_year[year_index]) + len(holes_by_year[year_index])
+        
+        year_schedule = current_schedule.year_schedules[year_index]
+        # and then pick an bad slot and a move to make it better
         move, slot = choose_slot_and_move(violations_middle_by_year[year_index],
                                     violations_start_end_by_year[year_index],
-                                    empty_slots_by_year[year_index])
+                                    holes_by_year[year_index])
         # if no optimal slot is found, just select one randomly
-        # To diversify research, 10% probability to select a random slot
+        # To diversify research, 10% probability to select a random slot and move to DIVERSIFY research
         if slot == None or random.random() < 0.1:
-            slot = random.choice(year_scedule)
+            slot = random.choice(year_schedule)
+            move = random.choice([MOVE_TYPE.MOVE.value, MOVE_TYPE.SWAP.value])
         
+        # start local search on different neighbourhoods
+        # SWAP
         if move == "swap":
             # try swapping in the same day
             # if it does not improve, switch between days
             day = slot.time_slot.day
-            day_slots = [s for s in year_scedule if s.time_slot.day == day and s.time_slot.start != slot.time_slot.start]
+            day_slots = [s for s in year_schedule if s.time_slot.day == day and s.time_slot.start != slot.time_slot.start]
             slots_to_choose_from = day_slots
-            for iter in range(MAX_ITER_SLOT):
+            while slots_to_choose_from != [] and improved == False:
                 neighbor, swapped_slot = swap_time_slots(current_schedule, year_index, slot, slots_to_choose_from=slots_to_choose_from)
                 
                 # Update Fitness
                 if is_schedule_valid(neighbor, True):
-                    fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_empty_slots_by_year = evaluate_schedule(neighbor, True)
+                    fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_holes_by_year = evaluate_schedule(neighbor, True)
 
                     if fitness < best_fitness:
                         print(f"{GREEN}Fitness improved from {best_fitness} to {fitness}.\n\n{RESET}")
                         violations_start_end_by_year = new_violations_start_end_by_year
                         violations_middle_by_year = new_violations_middle_by_year
-                        empty_slots_by_year = new_empty_slots_by_year
+                        holes_by_year = new_holes_by_year
                         current_schedule = neighbor
                         best_fitness = fitness
                         improved = True
                     
                 # remove the last swapped slot to not select it again
                 slots_to_choose_from.remove(swapped_slot)
-                
-                # we break if we improve or have none slots to choose
-                if improved or len(slots_to_choose_from) == 0:
-                    break
             
             if not improved:
                 # Then try to swap between days (without trying the same day slots again or the chosen slot itself)
                 day_slots.append(slot)
-                slots_to_choose_from = [s for s in year_scedule if s not in day_slots]
+                slots_to_choose_from = [s for s in year_schedule if s not in day_slots]
                 
                 print(f"Didn't improve on day slots, trying swapping between days\n")
-                for iter in range(MAX_ITER_SLOT):
+                while slots_to_choose_from != [] and improved == False:
                     neighbor, swapped_slot = swap_time_slots(current_schedule, year_index, slot, slots_to_choose_from=slots_to_choose_from)
                     
                     # Update Fitness
                     if is_schedule_valid(neighbor, True):
-                        fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_empty_slots_by_year = evaluate_schedule(neighbor, True)
+                        fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_holes_by_year = evaluate_schedule(neighbor, True)
 
                         if fitness < best_fitness:
                             print(f"{GREEN}Fitness improved from {best_fitness} to {fitness}.\n\n{RESET}")
                             violations_start_end_by_year = new_violations_start_end_by_year
                             violations_middle_by_year = new_violations_middle_by_year
-                            empty_slots_by_year = new_empty_slots_by_year
+                            holes_by_year = new_holes_by_year
                             current_schedule = neighbor
                             best_fitness = fitness
                             improved = True
@@ -202,19 +250,98 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
                     # remove the last swapped slot to not select it again
                     slots_to_choose_from.remove(swapped_slot)
                     
-                    # we break if we improve or have none slots to choose
-                    if improved or len(slots_to_choose_from) == 0:
-                        break
-        else:
-            neighbor = move_to_empty_slot(current_schedule, year_index, slot)
+            # if we still didnt improve, we try to move the slot in an empty free space
+            if not improved:
+                empty_slots = find_all_empty_slots(year_schedule)
+                for i, empty_slot in enumerate(empty_slots):
+                    neighbor = move_to_empty_slot(current_schedule, year_index, slot, empty_slot)
+                    
+                    # Update Fitness
+                    if is_schedule_valid(neighbor, True):
+                        fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_holes_by_year = evaluate_schedule(neighbor, True)
 
+                        if fitness <= best_fitness:
+                            print(f"{GREEN}Fitness improved from {best_fitness} to {fitness}.\n\n{RESET}")
+                            violations_start_end_by_year = new_violations_start_end_by_year
+                            violations_middle_by_year = new_violations_middle_by_year
+                            holes_by_year = new_holes_by_year
+                            current_schedule = neighbor
+                            best_fitness = fitness
+                            improved = True
+                            break
+                
+                    
+        # MOVE
+        else:
+            # we obtain all the holes to fill, as well as free slots we can use to move slots into
+            holes = holes_by_year[year_index].copy()
+            empty_slots = find_all_empty_slots(year_schedule)
+            
+            # we then look at the holes in the year and try to fill at least one
+            while holes != [] and improved == False:
+                # we obtain all the slots at the end or start of a day
+                violations_start_end = violations_start_end_by_year[year_index].copy()
+                start_end_slots = get_start_end_slots_for_year(year_schedule)
+                
+                # choose one random hole slot to fill with another slot (without creating a new hole)
+                hole = random.choice(holes)
+                while start_end_slots != [] and improved == False:
+                    # try with the slots at the end or start of the days
+                    # first try with the violations one
+                    intersection_slots = [s for s in start_end_slots if s in violations_start_end]
+                    if intersection_slots != []:
+                        start_end_slot = random.choice(intersection_slots)
+                    else:
+                        start_end_slot = random.choice(start_end_slots)
+                    neighbor = move_to_empty_slot(current_schedule, year_index, start_end_slot, hole)
+                    
+                    # Update Fitness
+                    if is_schedule_valid(neighbor, True):
+                        fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_holes_by_year = evaluate_schedule(neighbor, True)
+
+                        if fitness < best_fitness:
+                            print(f"{GREEN}Fitness improved from {best_fitness} to {fitness}.\n\n{RESET}")
+                            violations_start_end_by_year = new_violations_start_end_by_year
+                            violations_middle_by_year = new_violations_middle_by_year
+                            holes_by_year = new_holes_by_year
+                            current_schedule = neighbor
+                            best_fitness = fitness
+                            improved = True
+                    
+                    # if we still didnt improve, we try to move "the slot over or below the hole" in an empty free space to eliminate the hole
+                    if not improved:
+                        for i, empty_slot in enumerate(empty_slots):
+                            neighbor = move_to_empty_slot(current_schedule, year_index, start_end_slot, empty_slot)
+                            
+                            # Update Fitness
+                            if is_schedule_valid(neighbor, True):
+                                fitness, new_violations_start_end_by_year, new_violations_middle_by_year, new_holes_by_year = evaluate_schedule(neighbor, True)
+
+                                if fitness < best_fitness:
+                                    print(f"{GREEN}Fitness improved from {best_fitness} to {fitness}.\n\n{RESET}")
+                                    violations_start_end_by_year = new_violations_start_end_by_year
+                                    violations_middle_by_year = new_violations_middle_by_year
+                                    holes_by_year = new_holes_by_year
+                                    current_schedule = neighbor
+                                    best_fitness = fitness
+                                    improved = True
+                                    break
+                    
+                    start_end_slots.remove(start_end_slot)
+                
+                # remove the hole and try again (if not improved)
+                holes.remove(hole)
+
+        # if not improved and (debug_list_length -(len(violations_middle_by_year[year_index]) + len(violations_start_end_by_year[year_index]) + len(holes_by_year[year_index])) != 0):
+            #raise RuntimeError("Lunghezza liste di valutazione cambiata!!!")
+        
         if best_fitness == 0:
             break
 
     print(f"EVAL OF FINAL SCHEDULE:\n")
     evaluate_schedule(current_schedule, True)
     
-    print(f"{CYAN}Finished after {MAX_ITER} iterations ({MAX_ITER_SLOT} iterations per slot).\
+    print(f"{CYAN}Finished after {MAX_ITER} iterations).\
                   \nInitial Fitness: {init_fitness} --- Best Fitness: {best_fitness}\n\
                   {RED}DEBUG: {debug_cont.items()}\n")
     return current_schedule, init_fitness, best_fitness
@@ -229,6 +356,29 @@ def find_empty_slots_between_lessons(daily_slots: list[AssignedTimeSlot], day: s
             empty_slots.append(TimeSlot(start=current_end, end=current_end + 2, day=day))
             current_end += 2
     return empty_slots
+
+
+def find_all_empty_slots(year_schedule: list[AssignedTimeSlot]) -> list[TimeSlot]:
+    free_slots = []
+    
+    for day in DAYS:
+        occupied_times = sorted(
+            [slot.time_slot.start for slot in year_schedule if slot.time_slot.day == day]
+        )
+        
+        current_time = START_TIME
+        for slot_start in occupied_times:
+            while current_time + 2 <= slot_start:
+                free_slots.append(TimeSlot(start=current_time, end=current_time + 2, day=day))
+                current_time += 2
+            current_time = slot_start + 2
+        
+        # Capture free slots after the last occupied slot
+        while current_time + 2 <= END_TIME:
+            free_slots.append(TimeSlot(start=current_time, end=current_time + 2, day=day))
+            current_time += 2
+    
+    return free_slots
 
 
 def swap_time_slots(schedule: Schedule, year_index: int, slot: AssignedTimeSlot, slots_to_choose_from: list[AssignedTimeSlot] = None) -> tuple[Schedule, AssignedTimeSlot]:
@@ -262,24 +412,16 @@ def swap_time_slots(schedule: Schedule, year_index: int, slot: AssignedTimeSlot,
     return neighbor, other_slot
 
 
-def move_to_empty_slot(schedule: Schedule, year_index: int, slot: AssignedTimeSlot) -> Schedule:
+def move_to_empty_slot(schedule: Schedule, year_index: int, slot: AssignedTimeSlot, hole: TimeSlot) -> Schedule:
     neighbor = deepcopy(schedule)
     year_schedule = neighbor.year_schedules[year_index]
-
-    empty_slots = []
-
-    if not empty_slots:
-        return schedule
-
-    print(f"empty slots for year {year_index}: {empty_slots}")
     
-    new_slot = random.choice(empty_slots)
     year_schedule.remove(slot)
     year_schedule.append(AssignedTimeSlot(
         classroom=slot.classroom,
         teacher=slot.course.teacher,
         course=slot.course,
-        time_slot=new_slot,
+        time_slot=hole,
         color_hex=slot.color_hex
     ))
     
