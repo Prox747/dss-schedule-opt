@@ -17,7 +17,7 @@ debug_cont = {
 debug_log = False
 
 def find_schedule(max_iter: int = None, max_iter_no_improv: int = None) -> Schedule:
-    teachers: list[Teacher] = extract_teachers('./data/teachers_lvl_1.json')
+    teachers: list[Teacher] = extract_teachers('./data/teachers_lvl_6.json')
     for teacher in teachers:
         print(teacher)
         print("\n\n")
@@ -318,7 +318,7 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
                             best_fitness = fitness
                             improved = True
                     
-                    # if we still didnt improve, we try to move "the slot over or below the hole" in an empty free space to eliminate the hole
+                    # if we still didnt improve, we try to move the slot in an empty free space to eliminate the hole
                     if not improved:
                         for i, empty_slot in enumerate(empty_slots):
                             neighbor = move_to_empty_slot(current_schedule, year_index, start_end_slot, empty_slot)
