@@ -41,6 +41,10 @@ function initializeSchedule() {
     // we loop for each of the three years and init the grids
     for (let i = 1; i <= 3; i++) {
         const scheduleBody = document.getElementById(`${i}-schedule-body`) as HTMLElement;
+
+        // Clear any previously generated schedule rows
+        scheduleBody.innerHTML = "";
+        
         const hours = Array.from({ length: 10 }, (_, i) => 8 + i); // [8, 9, ..., 17]
 
         hours.forEach(hour => {
@@ -78,6 +82,9 @@ function initializeSchedule() {
 
 // Function to populate the schedule table
 function populateSchedule(data: ScheduleDto) {
+    // empty the previous schedule
+    initializeSchedule()
+
     const yearSchedules = data.year_schedules;
 
     // we have 3 years
