@@ -17,7 +17,7 @@ debug_cont = {
 debug_log = False
 
 def find_schedule(max_iter: int = None, max_iter_no_improv: int = None) -> Schedule:
-    teachers: list[Teacher] = extract_teachers('./data/teachers_lvl_6.json')
+    teachers: list[Teacher] = extract_teachers('./data/teachers_lvl_5.json')
     for teacher in teachers:
         print(teacher)
         print("\n\n")
@@ -47,6 +47,9 @@ def find_schedule(max_iter: int = None, max_iter_no_improv: int = None) -> Sched
     if max_iter_no_improv == None:
         max_iter_no_improv = MAX_ITER_NO_IMPROVEMENT 
     
+    if max_iter == 0:
+        return schedule, init_fitness, init_fitness
+        
     best_schedule, init_fitness, best_fitness = local_search(schedule, teachers, year1_courses, year2_courses, year3_courses, max_iter, max_iter_no_improv)
     
     return best_schedule, init_fitness, best_fitness
