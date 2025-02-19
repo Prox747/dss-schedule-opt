@@ -14,10 +14,10 @@ debug_cont = {
     "overlap": 0
 }
 
-debug_log = False
+debug_log = True
 
 def find_schedule(max_iter: int = None, max_iter_no_improv: int = None) -> Schedule:
-    teachers: list[Teacher] = extract_teachers('./data/teachers_lvl_5.json')
+    teachers: list[Teacher] = extract_teachers('./data/teachers_lvl_7.json')
     for teacher in teachers:
         print(teacher)
         print("\n\n")
@@ -46,6 +46,8 @@ def find_schedule(max_iter: int = None, max_iter_no_improv: int = None) -> Sched
         max_iter = MAX_ITER
     if max_iter_no_improv == None:
         max_iter_no_improv = MAX_ITER_NO_IMPROVEMENT 
+        
+    init_fitness, _, _, _ = evaluate_schedule(schedule, log=debug_log)
     
     if max_iter == 0:
         return schedule, init_fitness, init_fitness
