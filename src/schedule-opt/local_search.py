@@ -17,7 +17,7 @@ debug_cont = {
 debug_log = True
 
 def find_schedule(max_iter: int = None, max_iter_no_improv: int = None) -> Schedule:
-    teachers: list[Teacher] = extract_teachers('./data/teachers_lvl_7.json')
+    teachers: list[Teacher] = extract_teachers('./data/teachers_lvl_5.json')
     for teacher in teachers:
         print(teacher)
         print("\n\n")

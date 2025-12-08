@@ -1,6 +1,25 @@
 # DSS-schedule-opt 🗓️
 A university project focused on finding the optimal schedule for a university bachelor program given a set of constraints.
 
+## How to run
+From the project root, navigate to the backend directory:
+```bash
+cd src/schedule-opt/
+```
+Start the uvicorn server with:
+```bash
+python -m uvicorn app:app --reload --port 13000
+```
+Then navigate to the client directory:
+```bash
+cd src/client/
+```
+And start with:
+```bash
+npm run serve
+```
+Finally, open the browser at localhost:8080 (or with the port you set).
+
 ## Heuristics involved
 ### Heuristic to build the first solution
 Pretty simple, we just try to allocate the slots for the most demanding teachers first, and then we continue assining for the others.
