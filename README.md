@@ -25,9 +25,8 @@ Finally, open the browser at localhost:8080 (or with the port you set).
 Pretty simple, we just try to allocate the slots for the most demanding teachers first, and then we continue assining for the others.
 ### How to move the slots
 Our schedule is worse if it contains holes between lessons or if teachers' preferences are not met. Hence, for each iteration, we keep two lists of slots. These represent the best slots to move/swap depending on some criteria. 
- - For moving to an empty slot: we move a slot only if it does not create a hole after moving (so the first or last slot of a day).
- - For swapping: we prefer to swap the slots that are not at the start or end of a day (middle) because we cannot move them.
-Then we do a Variable Neighbourhood Search trying to improve the solution using slots of the same day. If it does not improve we try to do the move using other days as well.
+ - For moving to an empty slot: we prefer moving a slot if it does not create a hole after moving. If moves do not improve the solution, we try to move the slot to fill a hole in other days. If not possible we try to still move it to an empty slot.
+ - For swapping: we prefer to swap the slots that are not at the start or end (middle) because we should not move them. Then we do a Variable Neighbourhood Search trying to improve the solution using slots of the same day. If it does not improve we try to do the move using other days as well.
 
 ## Teachers input examples
 To test the system 7 examples have been created in incresing difficulty (each slot is min 2 hours long). Each example contains underised and unavailable time slots expressed by each fictional teacher.
