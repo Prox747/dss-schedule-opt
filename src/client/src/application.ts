@@ -112,7 +112,7 @@ function populateSchedule(data: ScheduleDto) {
 
     // write query time taken
     const info = document.getElementById('query-info') as HTMLElement;
-    info.textContent = `🕒Tempo di calcolo: ${data.query_time_ms} ms    👋Fitness Iniziale: ${data.init_fitness}    💪Fitness Migliore: ${data.best_fitness}`;
+    info.textContent = `🕒Tempo di calcolo: ${(data.query_time_ms / 1000).toFixed(3)} secondi    👋Fitness Iniziale: ${data.init_fitness}    💪Fitness Migliore: ${data.best_fitness}`;
 }
 
 async function get_schedule() {
