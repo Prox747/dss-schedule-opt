@@ -219,7 +219,7 @@ def local_search(initial_schedule: Schedule, teachers: list[Teacher],
         
         # start local search on different neighbourhoods
         # SWAP
-        if move == "swap":
+        if move == MOVE_TYPE.SWAP.value:
             # try swapping in the same day
             # if it does not improve, switch between days
             day = slot.time_slot.day
