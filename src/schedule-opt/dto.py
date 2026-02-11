@@ -17,5 +17,5 @@ class ScheduleDto(BaseModel):
     ]
     init_fitness: int
     best_fitness: int
-    query_time_ms: int
+    query_time_ms: float
     
