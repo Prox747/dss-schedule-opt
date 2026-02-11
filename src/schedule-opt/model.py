@@ -20,7 +20,7 @@ class Teacher(BaseModel):
             
         return hours_total
         
-
+Level = Literal[1, 2, 3, 4, 5, 6, 7]
 
 class Course(BaseModel):
     name: str

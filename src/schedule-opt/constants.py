@@ -1,4 +1,5 @@
 from enum import Enum
+from model import Level
 
 DAYS = ["lunedi", "martedi", "mercoledi", "giovedi", "venerdi"]
 START_TIME = 8  # Start of the day
@@ -14,6 +15,20 @@ MAX_DAILY_HOURS = 6
 class MOVE_TYPE(Enum):
     SWAP = "swap"
     MOVE = "move"
+
+DATA_PATH: str = "./data/"
+
+COURSES_PATH: str = "courses.json"
+
+LEVEL_FILEPATHS_MAP: dict[Level, str] = {
+    1: "teachers_lvl_1.json",
+    2: "teachers_lvl_2.json",
+    3: "teachers_lvl_3.json",
+    4: "teachers_lvl_4.json",
+    5: "teachers_lvl_5.json",
+    6: "teachers_lvl_6.json",
+    7: "teachers_lvl_7.json"
+}
 
 COLORS: list[str] = [
     "#556B2F", # Dark Olive Green

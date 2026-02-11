@@ -4,7 +4,7 @@ from collections import defaultdict
 
 from input_builder import extract_teachers, extract_courses, build_first_schedule
 from model import Teacher, Course, Schedule, AssignedTimeSlot, TimeSlot
-from constants import MAX_ITER, MAX_ITER_NO_IMPROVEMENT, ALPHA, BETA, DAYS, MAX_DAILY_HOURS, START_TIME, END_TIME, MOVE_TYPE
+from constants import MAX_ITER, MAX_ITER_NO_IMPROVEMENT, ALPHA, BETA, DAYS, MAX_DAILY_HOURS, START_TIME, END_TIME, MOVE_TYPE, LEVEL_FILEPATHS_MAP, DATA_PATH, COURSES_PATH
 from ansi_colors import *
 
 debug_cont = {
@@ -16,13 +16,16 @@ debug_cont = {
 
 debug_log = True
 
-def find_schedule(max_iter: int = None, max_iter_no_improv: int = None) -> Schedule:
-    teachers: list[Teacher] = extract_teachers('./data/teachers_lvl_5.json')
+def find_schedule(level: int, max_iter: int = None, max_iter_no_improv: int = None) -> Schedule:
+    levelFilePath: str = DATA_PATH + LEVEL_FILEPATHS_MAP[level]
+    coursesFilePath: str = DATA_PATH + COURSES_PATH
+    
+    teachers: list[Teacher] = extract_teachers(levelFilePath)
     for teacher in teachers:
         print(teacher)
         print("\n\n")
         
-    courses: list[Course] = extract_courses("./data/courses.json", teachers)
+    courses: list[Course] = extract_courses(coursesFilePath, teachers)
     for course in courses:
         print(course)
         print("\n\n")

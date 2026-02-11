@@ -33,9 +33,23 @@
         <input id="max_iter_form" type="number" class="form-control" placeholder="Default">
         <label for="floatingInput">Numero massimo di iterazioni</label>
       </div>
-      <div class="form-floating" style="width: 450px;">
+      <div class="form-floating me-3" style="width: 450px;">
         <input id="max_iter_no_improv_form" type="number" class="form-control" placeholder="Default">
         <label for="floatingPassword">Numero massimo di iterazioni dall'ultimo miglioramento</label>
+      </div>
+
+       <!-- Dropdown for difficulty settings -->
+      <div class="form-floating" style="width: 260px;">
+        <select id="level_select" class="form-select">
+          <option value="1">Molto facile</option>
+          <option value="2">Facile</option>
+          <option value="3">Medio</option>
+          <option value="4">Difficile</option>
+          <option value="5">Molto Difficile</option>
+          <option value="6">Inferno</option>
+          <option value="7">Irreale</option>
+        </select>
+        <label for="level_select">Livello</label>
       </div>
     </div>
   </div>

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { ScheduleDto, TimeSlotDto } from "./model_dto";
 import { example_output } from "./examples";
+import { levelDescriptions, isLevel } from "./level";
 
 console.log(
     '🚀 Developed by Prox'
@@ -35,6 +36,24 @@ const colors = [
     "#708090", // Slate Gray
     "#9ACD32", // Yellow-Green
 ];
+
+// update level select tooltips
+const levelSelect = document.getElementById("level_select") as HTMLOptionElement;
+
+function updateTooltip() {
+    const num = Number(levelSelect.value);
+
+    if (isLevel(num)) {
+        levelSelect.title = levelDescriptions[num];
+    } else {
+        levelSelect.title = "Unsupported level (shoudn't appear)";
+    }
+}
+
+updateTooltip();
+
+// update on change
+levelSelect.addEventListener("change", updateTooltip);
 
 // Function to initialize the schedule grids
 function initializeSchedule() {
@@ -116,19 +135,22 @@ function populateSchedule(data: ScheduleDto) {
 }
 
 async function get_schedule() {
-    var url = `http://localhost:13000/api/schedule`
-    var max_iter_bool = false
+    let url = `http://localhost:13000/api/schedule`
+    let max_iter_bool = false
+
+    const level = Number(levelSelect.value)
+
+    url = `${url}?level=${level}`
 
     const max_iter_input = document.getElementById('max_iter_form') as HTMLInputElement;
     if (max_iter_input.value != null && max_iter_input.value.trim() && (max_iter_input.value != max_iter_input.placeholder)) {
         console.log("max iter non è none")
-        url = `${url}?max_iter=${max_iter_input.value}`
-        max_iter_bool = true
+        url = `${url}&max_iter=${max_iter_input.value}`
     }
 
     const max_iter_no_improv_input = document.getElementById('max_iter_no_improv_form') as HTMLInputElement;
     if (max_iter_no_improv_input.value != null && max_iter_no_improv_input.value.trim() && (max_iter_no_improv_input.value != max_iter_no_improv_input.placeholder)) {
-        url = `${url}${max_iter_bool ? "&" : "?"}max_iter_no_improv=${max_iter_no_improv_input.value}`
+        url = `${url}&max_iter_no_improv=${max_iter_no_improv_input.value}`
     }
 
     console.log(url)
